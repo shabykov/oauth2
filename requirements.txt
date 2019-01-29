@@ -1,0 +1,7 @@
+django
+django-oauth-toolkit
+django-cors-middleware
+django-widget-tweaks
+djangorestframework
+flask
+requests

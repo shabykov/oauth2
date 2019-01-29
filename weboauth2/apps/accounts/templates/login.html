@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}Вход в{% endblock %}
+{% block content %}
+<div class="content">
+    <div class="row justify-content-center">
+        <div class="col-8 ">
+            <div class="card rounded-0">
+                <div class="card-header">
+                    <h3 class="mb-0">Вход</h3>
+                </div>
+                <div class="card-body">
+                    {% if form.errors %}
+                    <p class="alert alert-warning">
+                        Ваше логин и пароль не совпадали. Пожалуйста, попробуйте еще раз.
+                    </p>
+                    {% endif %}
+                    {% if next %}
+                        {% if user.is_authenticated %}
+                        <p class="alert alert-warning">
+                            У вашей учетной записи нет доступа к этой странице. Продолжать,
+                            войдите в систему с учетной записью, имеющей доступ.
+                        </p>
+                        {% else %}
+                        <p class="alert alert-warning">
+                            Пожалуйста, войдите, чтобы увидеть эту страницу
+                        </p>
+                        {% endif %}
+                    {% endif %}
+                    {% if next %}<form action="{% url 'login' %}?next={{ next }}" method="post">{% else %}
+                    <form action="{% url 'login' %}" method="post">{% endif %}
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="id_username">{{ form.username.label_tag }}</label>
+                            {% render_field form.username class="form-control" %}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_password">{{ form.password.label_tag }}</label>
+                            {% render_field form.password class="form-control" %}
+                        </div>
+                        <button type="submit" class="btn btn-primary">Войти</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

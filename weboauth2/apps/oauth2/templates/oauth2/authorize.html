@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Авторизация{% endblock %}
+{% block content %}
+<div class="content">
+    <div class="row justify-content-center">
+        <div class="col-8 ">
+            <div class="jumbotron">
+                {% if not error %}
+                    <form method="post">
+                        <h3 class="display-5">Авторизоваться в приложении {{ application.name }}?</h3>
+                        <hr class="my-4">
+                        {% csrf_token %}
+
+                        {% for field in form %}
+                            {% if field.is_hidden %}
+                                {{ field }}
+                            {% endif %}
+                        {% endfor %}
+
+                        <p>Приложение требует следующих привилегий</p>
+                        <ul>
+                            {% for scope in scopes_descriptions %}
+                                <li>{{ scope }}</li>
+                            {% endfor %}
+                        </ul>
+
+                        {{ form.errors }}
+                        {{ form.non_field_errors }}
+
+                        <div class="control-group">
+                            <div class="controls">
+                                <input type="submit" class="btn btn-link" value="Отмена"/>
+                                <input type="submit" class="btn btn-primary" name="allow" value="Авторизовать"/>
+                            </div>
+                        </div>
+                    </form>
+                {% else %}
+                    <h2>Error: {{ error.error }}</h2>
+                    <p>{{ error.description }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

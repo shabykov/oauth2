@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Выбор привилегий{% endblock %}
+{% block content %}
+<div class="content">
+    <div class="row justify-content-center">
+        <div class="col-8 ">
+            <div class="jumbotron">
+                {% if scopes %}
+                <h3>Доступные привилегия</h3>
+                <hr class="my-4">
+                <p>Выберите привилегию для доступа к ресурсам приложения.</p>
+                <ul>
+                    {% for scope, description in scopes.items %}
+                    <li>
+                        <a href="{% url 'redirect-to-authorize' application.pk %}?scope={{ scope }}">{{ description }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <h3>Нет доступных привилегий</h3>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
