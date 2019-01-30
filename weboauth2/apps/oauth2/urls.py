@@ -7,7 +7,7 @@ from .views.api import v1
 # API endpoints
 urlpatterns = [
     url(r'^api/v1/hello/$', v1.ApiEndpoint.as_view()),
-    url(r'^api/v1/authorized-user/$', v1.GetUserView.as_view()),
+    url(r'^api/v1/authorized-user/$', v1.get_user_view),
 ]
 
 # OAuth2 provider endpoints
