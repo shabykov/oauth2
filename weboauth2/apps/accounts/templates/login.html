@@ -39,7 +39,10 @@
                             <label for="id_password">{{ form.password.label_tag }}</label>
                             {% render_field form.password class="form-control" %}
                         </div>
-                        <button type="submit" class="btn btn-primary">Войти</button>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success">Войти</button>
+                            <a href="{% url 'password_reset' %}" class="btn btn-link">Забыли пароль?</a>
+                        </div>
                     </form>
                 </div>
             </div>

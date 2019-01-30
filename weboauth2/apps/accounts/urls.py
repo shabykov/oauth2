@@ -1,13 +1,57 @@
 from django.conf.urls import url
-from django.contrib.auth.views import LoginView, LogoutView
-from .views import index
+
+from . import views
 
 urlpatterns = [
-    url(r'^$', index, name='index'),
-    url(r'^accounts/login/$', LoginView.as_view(template_name='login.html'), name='login'),
-    url(r'^accounts/logout/$', LogoutView.as_view(), name='logout'),
+    url(
+        r'^$',
+        views.index,
+        name='index'
+    ),
 
-    # url(r'^accounts/reset-password', PasswordResetView.as_view(), name='reset-password'),
-    # url(r'^accounts/change-password/$', PasswordChangeView.as_view(), name='change-password'),
-    # url(r'^accounts/change-password/$', PasswordChangeView.as_view(), name='change-password'),
+    #  login, logout views
+    url(
+        r'^accounts/login/$',
+        views.views.LoginView.as_view(template_name='login.html'),
+        name='login'
+    ),
+    url(
+        r'^accounts/logout/$',
+        views.LogoutView.as_view(),
+        name='logout'
+    ),
+
+    # password reset views
+    url(
+        r'^accounts/password-reset/$',
+        views.PasswordResetView.as_view(),
+        name='password_reset'
+    ),
+    url(
+        r'^accounts/reset/done/$',
+        views.PasswordResetDoneView.as_view(),
+        name='password_reset_done'
+    ),
+    url(
+        r'^accounts/reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+        views.PasswordResetConfirmView.as_view(),
+        name='password_reset_confirm'
+    ),
+    url(
+        r'^accounts/password-reset/complete/$',
+        views.PasswordResetCompleteView.as_view(),
+        name='password_reset_complete'
+    ),
+
+    # password change views
+    url(
+        r'^accounts/password-change/$',
+        views.PasswordChangeView.as_view(template_name='password-change.html'),
+        name='password_change'
+    ),
+    url(
+        r'^accounts/password-change/done/$',
+        views.PasswordChangeDoneView.as_view(template_name='password-change-done.html'),
+        name='password_change_done'
+    ),
 ]

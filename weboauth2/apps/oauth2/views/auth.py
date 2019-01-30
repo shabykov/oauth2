@@ -89,5 +89,6 @@ class TokenView(views.TokenView):
 
 
 class RevokeTokenView(views.RevokeTokenView):
-    pass
+    def post(self, request, *args, **kwargs):
+        return super(RevokeTokenView, self).post(request, *args, **kwargs)
 
