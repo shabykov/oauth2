@@ -38,8 +38,8 @@ class PasswordResetCompleteView(views.PasswordResetCompleteView):
 
 
 class PasswordChangeView(views.PasswordChangeView):
-    pass
+    template_name = 'password_change_form.html'
 
 
 class PasswordChangeDoneView(views.PasswordChangeDoneView):
-    pass
+    template_name = 'password_change_done.html'

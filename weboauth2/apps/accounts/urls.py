@@ -46,12 +46,12 @@ urlpatterns = [
     # password change views
     url(
         r'^accounts/password-change/$',
-        views.PasswordChangeView.as_view(template_name='password-change.html'),
+        views.PasswordChangeView.as_view(),
         name='password_change'
     ),
     url(
         r'^accounts/password-change/done/$',
-        views.PasswordChangeDoneView.as_view(template_name='password-change-done.html'),
+        views.PasswordChangeDoneView.as_view(),
         name='password_change_done'
     ),
 ]
