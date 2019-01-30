@@ -9,18 +9,8 @@ def index(request):
     return render(request, template_name='index.html')
 
 
-class LoginView(views.LogoutView):
-    template_name = 'login.html'
-    redirect_field_name = 'choose-application'
-
-
-class LogoutView(views.LogoutView):
-    pass
-
-
 class PasswordResetView(views.PasswordResetView):
     email_template_name = 'password_reset_email.html'
-    html_email_template_name = None
     subject_template_name = 'password_reset_subject.txt'
     template_name = 'password_reset_form.html'
 
