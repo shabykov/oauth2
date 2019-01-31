@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}{{ object }}{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <div class="jumbotron">
+                <h3>{{ object }}</h3>
+                <hr class="my-4">
+                <form method="post">
+                    {% csrf_token %}
+                    {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                    {% endfor %}
+                    <div class="form-group">
+                        <label for="id_username">{{ form.username.label }}</label>
+                        {% render_field form.username class="form-control" %}
+                        <small class="form-text text-muted">{{ form.username.help_text }}</small>
+                        {% for error in form.username.errors %}
+                        <p class="alert alert-warning">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_email">{{ form.email.label }}</label>
+                        {% render_field form.email class="form-control" %}
+                        <small class="form-text text-muted">{{ form.email.help_text }}</small>
+                        {% for error in form.email.errors %}
+                        <p class="alert alert-warning">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_phone">{{ form.phone.label }}</label>
+                        {% render_field form.phone class="form-control" %}
+                        <small class="form-text text-muted">{{ form.phone.help_text }}</small>
+                        {% for error in form.phone.errors %}
+                        <p class="alert alert-warning">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_password">{{ form.password.label }}</label>
+                        {% render_field form.password class="form-control" %}
+                        <small class="form-text text-muted">{{ form.password.help_text }}</small>
+                        {% for error in form.password.errors %}
+                        <p class="alert alert-warning">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_last_name">{{ form.last_name.label }}</label>
+                        {% render_field form.last_name class="form-control" %}
+                        <small class="form-text text-muted">{{ form.last_name.help_text }}</small>
+                        {% for error in form.last_name.errors %}
+                        <p class="alert alert-warning">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_first_name">{{ form.first_name.label }}</label>
+                        {% render_field form.first_name class="form-control" %}
+                        <small class="form-text text-muted">{{ form.first_name.help_text }}</small>
+                        {% for error in form.first_name.errors %}
+                        <p class="alert alert-warning">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_patronymic">{{ form.patronymic.label }}</label>
+                        {% render_field form.patronymic class="form-control" %}
+                        <small class="form-text text-muted">{{ form.patronymic.help_text }}</small>
+                        {% for error in form.patronymic.errors %}
+                        <p class="alert alert-warning">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="form-check">
+                        {% render_field form.is_active class="form-check-input" %}
+                        <label for="id_is_active" class="form-check-label">{{ form.is_active.label }}</label>
+                        <small class="form-text text-muted">{{ form.is_active.help_text }}</small>
+                        {% for error in form.is_active.errors %}
+                        <p class="alert alert-warning">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="form-check">
+                        {% render_field form.is_staff class="form-check-input" %}
+                        <label for="id_is_staff" class="form-check-label">{{ form.is_staff.label }}</label>
+                        <small class="form-text text-muted">{{ form.is_staff.help_text }}</small>
+                        {% for error in form.is_staff.errors %}
+                        <p class="alert alert-warning">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_role">{{ form.role.label }}</label>
+                        {% render_field form.role class="form-control" %}
+                        <small class="form-text text-muted">{{ form.role.help_text }}</small>
+                        {% for error in form.role.errors %}
+                        <p class="alert alert-warning">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_groups">{{ form.groups.label }}</label>
+                        {% render_field form.groups class="form-control" %}
+                        <small class="form-text text-muted">{{ form.groups.help_text }}</small>
+                        {% for error in form.groups.errors %}
+                        <p class="alert alert-warning">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_user_permissions">{{ form.user_permissions.label }}</label>
+                        {% render_field form.user_permissions class="form-control" %}
+                        <small class="form-text text-muted">{{ form.user_permissions.help_text }}</small>
+                        {% for error in form.user_permissions.errors %}
+                        <p class="alert alert-warning">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                        <a href="#" class="btn btn-primary">Сохранить и создать нового пользователя</a>
+                        <a href="{% url 'index' %}" class="btn btn-danger">Отменить</a>
+                        <a href="#" class="btn btn-danger">Удалить</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

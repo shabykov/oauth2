@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Новый пользователь{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="row justify-content-center">
+        <div class="col-8 ">
+            <div class="jumbotron">
+                <h3>Добавить нового пользователя</h3>
+                <hr class="my-4">
+                <form method="post">
+                    {% csrf_token %}
+                    {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                    {% endfor %}
+
+                    {% for field in form.visible_fields %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field|add_class:'form-control' }}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {% for error in field.errors %}
+                        <p class="alert alert-warning">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

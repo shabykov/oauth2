@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Пользователи{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <div class="jumbotron">
+                <h3>Пользователи</h3>
+                <hr class="my-4">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>ФИО</th>
+                        <th>Логин</th>
+                        <th>Роль</th>
+                        <th>Приложения</th>
+                        <th>Активный</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>
+                            {{ user.last_name }}<br>
+                            {{ user.first_name }}<br>
+                            {{ user.patronymic }}
+                        </td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.role }}</td>
+                        <td>
+                            <ul>
+                            {% for app in user.profile.applications.all %}
+                                <li>{{ app }}</li>
+                            {% endfor %}
+                            </ul>
+                        </td>
+                        <td>{{ user.is_active }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

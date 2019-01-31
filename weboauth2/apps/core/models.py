@@ -15,7 +15,8 @@ from .managers import UserManager
 class Role(models.Model):
 
     ADMIN = 1
-    CUSTOMER = 2
+    APPLICATION_ADMIN = 2
+    CUSTOMER = 3
 
     ROLE_CHOICES = (
         (ADMIN, 'admin'),
