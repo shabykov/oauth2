@@ -46,6 +46,24 @@ class ChooseScopeView(TemplateView):
 
 
 @method_decorator(decorators, name='dispatch')
+class ApplicationChooseConfirm(TemplateView):
+    application = None
+    template_name = 'oauth2/application_choose_confirm.html'
+
+    def get(self, request, *args, **kwargs):
+        try:
+            self.application = models.Application.objects.get(client_id=kwargs['client_id'])
+        except Exception as error:
+            logging.error(error)
+        return super(ApplicationChooseConfirm, self).get( request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(ApplicationChooseConfirm, self).get_context_data(**kwargs)
+        context['application'] = self.application
+        return context
+
+
+@method_decorator(decorators, name='dispatch')
 class RedirectToAuthorizationView(RedirectView):
     permanent = False
     query_string = True

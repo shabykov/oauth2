@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Выбор приложений{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="row justify-content-center">
+        <div class="col-8 ">
+            <div class="jumbotron">
+                {% if application %}
+                <h3>Доступные приложения</h3>
+                <hr class="my-4">
+                <p>Выберите приложение для входа.</p>
+                <ul>
+                    <li>
+                        <a href="{% url 'choose-scope' application.pk %}">{{ application }}</a>
+                    </li>
+                </ul>
+                {% else %}
+                <h3>Нет доступных приложений</h3>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

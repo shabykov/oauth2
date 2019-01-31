@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 
 
 from django.db import models
-from django.conf import settings
 from django.core.mail import send_mail
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.base_user import AbstractBaseUser

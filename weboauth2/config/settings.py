@@ -159,7 +159,11 @@ OAUTH2_PROVIDER_REFRESH_TOKEN_MODEL = 'oauth2_provider.RefreshToken'
 
 
 OAUTH2_PROVIDER = {
-    'SCOPES': {'read': 'Read scope', 'write': 'Write scope', 'groups': 'Access to your groups'}
+    'SCOPES': {
+        'read': 'Права только на чтение',
+        'write': 'Права на запись/обновление',
+        'customer': 'Права обычного пользователя'
+    }
 }
 
 REST_FRAMEWORK = {
@@ -178,4 +182,4 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'username'
 EMAIL_HOST_PASSWORD = 'P@ssw0rd'
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'TestSite Team <noreply@authservice.com>'
+DEFAULT_FROM_EMAIL = 'IT Team <noreply@authservice.com>'
