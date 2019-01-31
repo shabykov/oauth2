@@ -13,7 +13,7 @@
                 <p>Выберите приложение для входа.</p>
                 <ul>
                     <li>
-                        <a href="{% url 'choose-scope' application.pk %}">{{ application }}</a>
+                        <a href="{% url 'scope-choose' application.pk %}">{{ application }}</a>
                     </li>
                 </ul>
                 {% else %}

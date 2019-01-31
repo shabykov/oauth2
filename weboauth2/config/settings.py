@@ -149,7 +149,7 @@ STATIC_URL = '/static/'
 CORS_ORIGIN_ALLOW_ALL = True
 
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'choose-application'
+LOGIN_REDIRECT_URL = 'application-choose'
 LOGOUT_REDIRECT_URL = 'login'
 
 OAUTH2_PROVIDER_GRANT_MODEL = 'oauth2_provider.Grant'

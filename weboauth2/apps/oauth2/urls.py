@@ -12,21 +12,21 @@ urlpatterns = [
 # OAuth2 provider endpoints
 urlpatterns += [
     url(
-        r'^o/choose-application/$',
-        views.ChooseApplicationView.as_view(),
-        name='choose-application'
+        r'^o/application-choose/$',
+        views.ApplicationChooseView.as_view(),
+        name='application-choose'
     ),
 
     url(
-        r'^o/choose-scope/(?P<pk>\d+)/$',
-        views.ChooseScopeView.as_view(),
-        name='choose-scope'
-    ),
-
-    url(
-        r'^o/applications/(?P<client_id>[0-9A-Za-z]{,40})/choose/confirm/$',
+        r'^o/application/(?P<client_id>[0-9A-Za-z]{,40})/choose/confirm/$',
         views.ApplicationChooseConfirm.as_view(),
         name='application-choose-confirm'
+    ),
+
+    url(
+        r'^o/scope-choose/(?P<pk>\d+)/$',
+        views.ScopeChooseView.as_view(),
+        name='scope-choose'
     ),
 
     url(

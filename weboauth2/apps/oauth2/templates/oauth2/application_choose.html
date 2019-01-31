@@ -14,7 +14,7 @@
                 <ul>
                     {% for application in applications %}
                     <li>
-                        <a href="{% url 'choose-scope' application.pk %}">{{ application }}</a>
+                        <a href="{% url 'scope-choose' application.pk %}">{{ application }}</a>
                     </li>
                     {% endfor %}
                 </ul>

@@ -12,10 +12,10 @@ decorators = [never_cache, login_required]
 
 
 @method_decorator(decorators, name='dispatch')
-class ChooseApplicationView(ListView):
+class ApplicationChooseView(ListView):
     model = models.Application
     context_object_name = 'applications'
-    template_name = 'oauth2/choose_application.html'
+    template_name = 'oauth2/application_choose.html'
 
     def get_queryset(self):
         try:
@@ -27,19 +27,19 @@ class ChooseApplicationView(ListView):
 
 
 @method_decorator(decorators, name='dispatch')
-class ChooseScopeView(TemplateView):
+class ScopeChooseView(TemplateView):
     application = None
-    template_name = 'oauth2/choose_scope.html'
+    template_name = 'oauth2/scope_choose.html'
 
     def get(self, request, *args, **kwargs):
         try:
             self.application = get_object_or_404(models.Application, pk=kwargs['pk'])
         except Exception as error:
             logging.error(str(error))
-        return super(ChooseScopeView, self).get(request, *args, **kwargs)
+        return super(ScopeChooseView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super(ChooseScopeView, self).get_context_data(**kwargs)
+        context = super(ScopeChooseView, self).get_context_data(**kwargs)
         context['application'] = self.application
         context['scopes'] = scopes.get_scopes_backend().get_all_scopes()
         return context
