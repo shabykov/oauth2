@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}{{ object }}{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <div class="jumbotron">
+                <h3>Удалить роль {{ object }}</h3>
+                <hr class="my-4">
+                <form method="post">
+                    {% csrf_token %}
+                    <p>Вы уверены, что хотите удалить роль пользователя "{{ object }}"?</p>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-danger">Уверен</button>
+                        <a href="{% url 'role_list' %}" class="btn btn-link">Нет</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

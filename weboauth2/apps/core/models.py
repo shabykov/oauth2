@@ -2,12 +2,16 @@ from __future__ import unicode_literals
 
 
 from django.db import models
+from django.dispatch import receiver
 from django.core.mail import send_mail
+from django.db.models.signals import post_save
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin, Group
 from django.contrib.auth.validators import UnicodeUsernameValidator
 
+
+from oauth2_provider.models import Application
 
 from .managers import UserManager
 
@@ -25,7 +29,8 @@ class Role(models.Model):
 
     id = models.PositiveSmallIntegerField(
         choices=ROLE_CHOICES,
-        primary_key=True
+        primary_key=True,
+        verbose_name='Идентификатор'
     )
 
     groups = models.ManyToManyField(
@@ -173,3 +178,32 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.set_users_groups_by_role()
 
 
+class Profile(models.Model):
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='profile',
+        verbose_name='Пользователь'
+    )
+
+    applications = models.ManyToManyField(
+        Application,
+        verbose_name='Приложения'
+    )
+
+    objects = models.Manager()
+
+    def __str__(self):
+        if self.user:
+            return self.user.username
+
+    class Meta:
+        verbose_name = 'профиль'
+        verbose_name_plural = 'профили'
+
+
+@receiver(post_save, sender=User)
+def update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+    instance.profile.save()

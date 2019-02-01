@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Список групп{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <div class="jumbotron">
+                <h3>Список групп</h3>
+                <hr class="my-4">
+                <div class="form-group">
+                    <a href="{% url 'group_create' %}" class="btn btn-primary">Добавить новую группу</a>
+                </div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Название</th>
+                        <th>Привилегия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for group in groups %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'group_update' group.pk %}">{{ group.name }}</a>
+                        </td>
+                        <td>
+                            <ul>
+                            {% for perm in group.permissions.all %}
+                                <li>{{ perm }}</li>
+                            {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,4 +1,4 @@
-from django.urls import reverse
+from django.urls import reverse_lazy
 from django.views import generic
 from .. import models, forms
 
@@ -18,7 +18,7 @@ class UserCreateView(generic.CreateView):
     template_name = 'user/create.html'
 
     def get_success_url(self):
-        return reverse('update_user', kwargs={'pk': self.object.pk})
+        return reverse_lazy('user_update', kwargs={'pk': self.object.pk})
 
 
 class UserUpdateView(generic.UpdateView):
@@ -27,4 +27,10 @@ class UserUpdateView(generic.UpdateView):
     template_name = 'user/update.html'
 
     def get_success_url(self):
-        return reverse('update_user', kwargs={'pk': self.object.pk})
+        return reverse_lazy('users_profile_update', kwargs={'user_pk': self.object.pk, 'pk': self.object.profile.pk})
+
+
+class UserDeleteView(generic.DeleteView):
+    model = models.User
+    template_name = 'user/delete.html'
+    success_url = reverse_lazy('user_list')

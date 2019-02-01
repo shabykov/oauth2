@@ -8,7 +8,7 @@
     <div class="row justify-content-center">
         <div class="col-10">
             <div class="jumbotron">
-                <h3>{{ object }}</h3>
+                <h3>Пользователь {{ object }}</h3>
                 <hr class="my-4">
                 <form method="post">
                     {% csrf_token %}
@@ -112,10 +112,9 @@
                         {% endfor %}
                     </div>
                     <div class="form-group">
-                        <button type="submit" class="btn btn-primary">Сохранить</button>
-                        <a href="#" class="btn btn-primary">Сохранить и создать нового пользователя</a>
-                        <a href="{% url 'index' %}" class="btn btn-danger">Отменить</a>
-                        <a href="#" class="btn btn-danger">Удалить</a>
+                        <button type="submit" class="btn btn-success">Сохранить</button>
+                        <a href="{% url 'user_list' %}" class="btn btn-secondary">Отменить</a>
+                        <a href="{% url 'user_delete' object.pk %}" class="btn btn-danger">Удалить</a>
                     </div>
                 </form>
             </div>

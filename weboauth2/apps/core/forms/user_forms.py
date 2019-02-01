@@ -1,7 +1,7 @@
 from django import forms as django_forms
 from django.contrib.auth import admin, forms
 
-from . import models
+from .. import models
 
 
 class UserAdmin(admin.UserAdmin):
@@ -48,8 +48,9 @@ class UserCreationForm(forms.UserCreationForm):
 
 class UserChangeForm(django_forms.ModelForm):
     password = forms.ReadOnlyPasswordHashField(
-        label="Пароль",
-        help_text="Необработанные пароли не хранятся, поэтому нет возможности это увидеть",
+        label='Пароль',
+        help_text='Значение данного поля замаскировано и не отображается в данном поле. '
+                  'Вы можете изменить пароль в разделе "Изменить пароль"',
     )
 
     class Meta:

@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
 
-{% block title %}Новый пользователь{% endblock %}
+{% block title %}{{ object }}{% endblock %}
 
 {% block content %}
 <div class="content">
     <div class="row justify-content-center">
         <div class="col-10">
             <div class="jumbotron">
-                <h3>Добавить нового пользователя</h3>
+                <h3>Группа {{ object }}</h3>
                 <hr class="my-4">
                 <form method="post">
                     {% csrf_token %}
@@ -27,6 +27,8 @@
                     {% endfor %}
                     <div class="form-group">
                         <button type="submit" class="btn btn-success">Сохранить</button>
+                        <a href="{% url 'group_list' %}" class="btn btn-secondary">Отменить</a>
+                        <a href="{% url 'group_delete' object.pk %}" class="btn btn-danger">Удалить</a>
                     </div>
                 </form>
             </div>

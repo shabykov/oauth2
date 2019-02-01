@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Список ролей{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <div class="jumbotron">
+                <h3>Список ролей</h3>
+                <hr class="my-4">
+                <div class="form-group">
+                    <a href="{% url 'role_create' %}" class="btn btn-primary">Добавить новую роль</a>
+                </div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Идентификатор</th>
+                        <th>Группы</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for role in roles %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'role_update' role.pk %}">{{ role }}</a>
+                        </td>
+                        <td>
+                            <ul>
+                            {% for group in role.groups.all %}
+                                <li>{{ group }}</li>
+                            {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

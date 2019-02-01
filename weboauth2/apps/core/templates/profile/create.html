@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
 
-{% block title %}Новый пользователь{% endblock %}
+{% block title %}Новый профиль{% endblock %}
 
 {% block content %}
 <div class="content">
     <div class="row justify-content-center">
         <div class="col-10">
             <div class="jumbotron">
-                <h3>Добавить нового пользователя</h3>
+                <h3>Добавить новый профиль</h3>
                 <hr class="my-4">
                 <form method="post">
                     {% csrf_token %}

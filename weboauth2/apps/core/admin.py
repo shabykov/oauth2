@@ -5,4 +5,5 @@ from . import models, forms
 
 
 admin.site.register(models.Role)
+admin.site.register(models.Profile)
 admin.site.register(models.User, forms.UserAdmin)

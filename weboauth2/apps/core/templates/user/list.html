@@ -10,13 +10,16 @@
             <div class="jumbotron">
                 <h3>Пользователи</h3>
                 <hr class="my-4">
+                <div class="form-group">
+                    <a href="{% url 'user_create' %}" class="btn btn-primary">Добавить нового пользователя</a>
+                </div>
                 <table class="table">
                     <thead>
                     <tr>
                         <th>ФИО</th>
                         <th>Логин</th>
                         <th>Роль</th>
-                        <th>Приложения</th>
+                        <th>Профиль</th>
                         <th>Активный</th>
                     </tr>
                     </thead>
@@ -28,14 +31,19 @@
                             {{ user.first_name }}<br>
                             {{ user.patronymic }}
                         </td>
-                        <td>{{ user.username }}</td>
+                        <td><a href="{% url 'user_update' user.pk %}">{{ user.username }}</a></td>
                         <td>{{ user.role }}</td>
                         <td>
+                            {% if user.profile %}
+                            <a href="{% url 'profile_update' user.profile.pk %}">{{ user.profile }}</a>
                             <ul>
                             {% for app in user.profile.applications.all %}
                                 <li>{{ app }}</li>
                             {% endfor %}
                             </ul>
+                            {% else %}
+                            <a href="{% url 'profile_create' user.pk %}">Добавить профиль</a>
+                            {% endif %}
                         </td>
                         <td>{{ user.is_active }}</td>
                     </tr>
