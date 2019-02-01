@@ -17,7 +17,7 @@ API_VERSION = 'v1'
 
 app = flask.Flask(__name__, template_folder='templates')
 
-app.secret_key = "qwerty12345"
+app.secret_key = "qwerty12345"  # don't do that
 
 
 def create_access_token(code):
