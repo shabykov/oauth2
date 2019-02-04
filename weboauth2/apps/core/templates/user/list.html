@@ -32,7 +32,10 @@
                             {{ user.patronymic }}
                         </td>
                         <td><a href="{% url 'user_update' user.pk %}">{{ user.username }}</a></td>
-                        <td>{{ user.role }}</td>
+                        <td>
+                            {% if user.profile %}
+                            {{ user.profile.role }}</td>
+                            {% endif %}
                         <td>
                             {% if user.profile %}
                             <a href="{% url 'profile_update' user.profile.pk %}">{{ user.profile }}</a>

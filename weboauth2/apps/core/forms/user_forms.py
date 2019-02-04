@@ -23,7 +23,7 @@ class UserAdmin(admin.UserAdmin):
     fieldsets = (
         ('General info', {'fields': ('username', 'email', 'phone', 'password')}),
         ('Personal info', {'fields': ('last_name', 'first_name', 'patronymic')}),
-        ('Permissions', {'fields': ('is_superuser', 'is_active', 'is_staff', 'role', 'groups', 'user_permissions',)}),
+        ('Permissions', {'fields': ('is_superuser', 'is_active', 'is_staff', 'groups', 'user_permissions',)}),
         ('Meta info', {'fields': ('last_login',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -47,17 +47,26 @@ class UserCreationForm(forms.UserCreationForm):
 
 
 class UserChangeForm(django_forms.ModelForm):
+
     password = forms.ReadOnlyPasswordHashField(
         label='Пароль',
         help_text='Значение данного поля замаскировано и не отображается в данном поле. '
                   'Вы можете изменить пароль в разделе "Изменить пароль"',
     )
 
+    groups = django_forms.ModelMultipleChoiceField(
+        label='Группы',
+        required=False,
+        queryset=models.Group.objects.all(),
+        widget=django_forms.SelectMultiple(attrs={'readonly': 'readonly'}),
+        help_text='Значения данного поля задаются при присвоении роли пользователю.'
+    )
+
     class Meta:
         model = models.User
         fields = ('username', 'email', 'phone',
                   'last_name', 'first_name', 'patronymic',
-                  'is_active', 'is_staff', 'role', 'groups', 'user_permissions')
+                  'is_active', 'is_staff', 'groups',)
 
         field_classes = {'username': forms.UsernameField}
 
