@@ -6,6 +6,11 @@ class UserPermissionRequiredMixin(mixins.LoginRequiredMixin, mixins.PermissionRe
     login_url = reverse_lazy('login')
     redirect_field_name = 'redirect_to'
 
+    def has_permission(self):
+        # self.request.user.profile.applications
+
+        return super().has_permission()
+
 
 class UserCreationMixin(UserPermissionRequiredMixin):
     permission_required = ('core.add_user', 'core.change_user', 'core.delete_user', 'core.view_user',)
