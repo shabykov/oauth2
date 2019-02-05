@@ -118,6 +118,15 @@ class User(AbstractBaseUser, PermissionsMixin):
         except Exception:
             return False
 
+    def get_applications(self):
+        if self.is_profile():
+            return self.profile.applications.all()
+        return []
+
+    def is_from_the_same_application(self, user):
+        apps = self.get_applications()
+        return all(True if app in apps else False for app in user.get_applications())
+
 
 class Role(models.Model):
     ADMIN = 1

@@ -55,7 +55,7 @@ class ProfileDeleteView(mixins.ProfileDeleteMixin, generic.DeleteView):
     success_url = reverse_lazy('user_list')
 
 
-class UsersProfileUpdateView(mixins.UserChangeMixin, ProfileUpdateView):
+class UsersProfileUpdateView(ProfileUpdateView):
     form_class = forms.UsersProfileChangeForm
 
     auth_user = None
