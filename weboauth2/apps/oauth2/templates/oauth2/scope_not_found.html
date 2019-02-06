@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Выбор привилегий{% endblock %}
+{% block content %}
+<div class="content">
+    <div class="row justify-content-center">
+        <div class="col-8 ">
+            <div class="jumbotron">
+                <h3>Нет доступных привилегий</h3>
+                <hr class="my-4">
+                <div class="form-group">
+                    <p>Нет доступных привилегий для доступа к приложении {{ application }}</p>
+                </div>
+                <div class="form-group">
+                    <a href="{% url 'login' %}" class="btn btn-primary">Войти из по другой учетной записи</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

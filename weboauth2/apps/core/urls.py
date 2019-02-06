@@ -25,6 +25,11 @@ urlpatterns = [
         views.UserDeleteView.as_view(),
         name='user_delete'
     ),
+    url(
+        r'core/users/(?P<pk>\d+)/does-not-have-permissions/',
+        views.UserDoesNotHavePermissionsView.as_view(),
+        name='user_does_not_have_permissions'
+    ),
 
     # Roles views
     url(

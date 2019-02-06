@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}{{ user }}{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <div class="jumbotron">
+                <h3>Нет прав доступа</h3>
+                <hr class="my-4">
+                <div>
+                    <p class="alert alert-warning">
+                        У вашей учетной записи нет прав доступа к этой странице. Для того чтобы продолжить,
+                        войдите в систему с учётной записью имеющей права доступа к этой странице.
+                    </p>
+                </div>
+                <div class="form-group">
+                    <a href="{% url 'login' %}" class="btn btn-success">Войти из под другой учётной записи</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

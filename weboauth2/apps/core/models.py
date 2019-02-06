@@ -10,6 +10,8 @@ from django.contrib.auth.models import PermissionsMixin, Group
 from django.contrib.auth.validators import UnicodeUsernameValidator
 
 from oauth2_provider.models import Application
+from oauth2_provider.scopes import get_scopes_backend
+
 
 from .managers import UserManager
 
@@ -129,6 +131,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Role(models.Model):
+    SCOPES = get_scopes_backend().get_all_scopes().items()
+    SCOPES_CHOICES = tuple((key, val) for key, val in SCOPES)
+
     ADMIN = 1
     APPLICATION_ADMIN = 2
     APPLICATION_CUSTOMER = 3
@@ -148,6 +153,12 @@ class Role(models.Model):
     groups = models.ManyToManyField(
         Group,
         verbose_name='Группы привелегий соотвестующие данной роли'
+    )
+
+    scope = models.TextField(
+        choices=SCOPES_CHOICES,
+        default='read+write',
+        verbose_name='Права доступа'
     )
 
     objects = models.Manager()

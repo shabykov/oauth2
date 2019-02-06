@@ -16,23 +16,20 @@ urlpatterns += [
         views.ApplicationChooseView.as_view(),
         name='application-choose'
     ),
-
     url(
         r'^o/application/(?P<client_id>[0-9A-Za-z]{,40})/choose/confirm/$',
         views.ApplicationChooseConfirm.as_view(),
         name='application-choose-confirm'
     ),
-
-    url(
-        r'^o/scope-choose/(?P<pk>\d+)/$',
-        views.ScopeChooseView.as_view(),
-        name='scope-choose'
-    ),
-
     url(
         r'^o/redirect-to-authorize/(?P<pk>\d+)/$',
         views.RedirectToAuthorizationView.as_view(),
         name='redirect-to-authorize'
+    ),
+    url(
+        r'^o/application/(?P<pk>\d+)/scope-not-found/$',
+        views.ScopeNotFoundView.as_view(),
+        name='application-scope-not-found'
     ),
 
     url(
@@ -40,13 +37,11 @@ urlpatterns += [
         views.AuthorizationView.as_view(),
         name="authorize"
     ),
-
     url(
         r'^o/token/$',
         views.TokenView.as_view(),
         name="token"
     ),
-
     url(
         r'^o/revoke-token/$',
         views.RevokeTokenView.as_view(),

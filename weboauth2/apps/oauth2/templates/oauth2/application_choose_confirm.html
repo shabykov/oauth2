@@ -8,14 +8,18 @@
         <div class="col-8 ">
             <div class="jumbotron">
                 {% if application %}
-                <h3>Доступные приложения</h3>
-                <hr class="my-4">
-                <p>Выберите приложение для входа.</p>
-                <ul>
-                    <li>
-                        <a href="{% url 'scope-choose' application.pk %}">{{ application }}</a>
-                    </li>
-                </ul>
+                    {% if scope %}
+                    <h3>Доступные приложения</h3>
+                    <hr class="my-4">
+                    <p>Выберите приложение для входа.</p>
+                    <ul>
+                        <li>
+                            <a href="{% url 'redirect-to-authorize' application.pk %}?scope={{ scope }}">{{ application }}</a>
+                        </li>
+                    </ul>
+                    {% else %}
+                    <h3>Нет прав к ресурасам приложения {{ application }}</h3>
+                    {% endif %}
                 {% else %}
                 <h3>Нет доступных приложений</h3>
                 {% endif %}

@@ -148,9 +148,9 @@ STATIC_URL = '/static/'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-LOGIN_URL = 'login'
+LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = 'application-choose'
-LOGOUT_REDIRECT_URL = 'login'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 OAUTH2_PROVIDER_GRANT_MODEL = 'oauth2_provider.Grant'
 OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL = 'oauth2_provider.AccessToken'
@@ -160,9 +160,21 @@ OAUTH2_PROVIDER_REFRESH_TOKEN_MODEL = 'oauth2_provider.RefreshToken'
 
 OAUTH2_PROVIDER = {
     'SCOPES': {
-        'read': 'Права только на чтение',
-        'write': 'Права на запись/обновление',
-        'customer': 'Права обычного пользователя'
+        'read': 'чтение',
+        'write': 'запись',
+        'change': 'изменеие',
+        'delete': 'удаление',
+        'read+write': 'чтение/запись',
+        'read+write+change': 'чтенеие/запись/измение',
+        'read+write+change+delete': 'чтенеие/запись/измение/удаление',
+
+        'devices.view_device': 'Просмотр устройств',
+        'devices.add_device': 'Добавление новых устройств',
+        'devices.change_device': 'Изменение устройств',
+        'devices.delete_device': 'Удаление устройств',
+        'devices.view_device+devices.add_device': 'Просмотр/добавление устройств',
+        'devices.view_device+devices.add_device+devices.change_device': 'Просмотр/добавление/изменение устройств',
+        'devices.view_device+devices.add_device+devices.change_device+devices.delete_device': 'Управление устройствами'
     }
 }
 
