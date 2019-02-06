@@ -9,11 +9,11 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin, Group
 from django.contrib.auth.validators import UnicodeUsernameValidator
 
-from oauth2_provider.models import Application
+
 from oauth2_provider.scopes import get_scopes_backend
 
 
-from .managers import UserManager
+from .managers import UserManager, RoleManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -151,7 +151,7 @@ class Role(models.Model):
     )
 
     groups = models.ManyToManyField(
-        Group,
+        'auth.Group',
         verbose_name='Группы привелегий соотвестующие данной роли'
     )
 
@@ -161,7 +161,7 @@ class Role(models.Model):
         verbose_name='Права доступа'
     )
 
-    objects = models.Manager()
+    objects = RoleManager()
 
     def __str__(self):
         return self.get_id_display()
@@ -182,13 +182,13 @@ class Profile(models.Model):
     role = models.ForeignKey(
         Role,
         on_delete=models.DO_NOTHING,
-        default=Role.APPLICATION_CUSTOMER,
+        null=True,
         verbose_name='Роль',
         help_text='Роль пользователья в системе'
     )
 
     applications = models.ManyToManyField(
-        Application,
+        'oauth2_provider.Application',
         verbose_name='Приложения'
     )
 
@@ -217,8 +217,6 @@ class Profile(models.Model):
             self.user.groups.set(self.role.groups.all())
 
     def save(self, *args, **kwargs):
-        if self.role is not None and self.role == Role.ADMIN:
-            self.user.is_superuser = True
 
         super(Profile, self).save(*args, **kwargs)
         self.set_users_groups_by_role()

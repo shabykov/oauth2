@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  postgres:
+    container_name: oauth2_db
+    hostname: postgres
+    restart: always
+    image: postgres:9.6
+    expose:
+      - 5432
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - pg_backups:/pg_backups
+    environment:
+      - POSTGRES_DB=weboauth2
+      - POSTGRES_USER=smith
+      - POSTGRES_PASSWORD=KuP*pDoA#DwchCTL
+
+  web:
+    container_name: oauth2_web
+    hostname: web
+    restart: always
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    expose:
+      - 8181
+    depends_on:
+      - postgres
+
+  nginx:
+    container_name: oauth2_nginx
+    hostname: nginx
+    restart: always
+    image: nginx:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - web
+    links:
+      - web:web
+    volumes:
+      - ../nginx.conf:/etc/nginx/conf.d/oauth2.conf
+      - ../weboauth2/static_root:/app/weboauth2/static_root
+
+volumes:
+  pg_data: {}
+  pg_backups: {}

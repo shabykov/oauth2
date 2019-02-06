@@ -1,3 +1,4 @@
+from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 
 
@@ -24,3 +25,12 @@ class UserManager(BaseUserManager):
             raise ValueError('Superuser must have is_superuser=True.')
 
         return self._create_user(username, password, **extra_fields)
+
+
+class RoleManager(models.Manager):
+
+    def get(self, **kwargs):
+        try:
+            return super().get(**kwargs)
+        except self.model.DoesNotExist:
+            return None

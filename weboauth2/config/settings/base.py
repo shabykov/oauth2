@@ -16,7 +16,7 @@ from django.core.exceptions import ImproperlyConfigured
 
 
 def root(*dirs):
-    base_dir = os.path.join(os.path.dirname(__file__), '..')
+    base_dir = os.path.join(os.path.dirname(__file__), '../..')
     return os.path.abspath(os.path.join(base_dir, *dirs))
 
 
@@ -160,11 +160,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
 
 STATIC_URL = '/static/'
+MEDIA_ROOT = root('media')
+STATIC_ROOT = root('static_root')
+STATICFILES_DIRS = [root('static')]
 
 CORS_ORIGIN_ALLOW_ALL = True
 
