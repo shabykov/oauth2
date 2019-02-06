@@ -16,7 +16,9 @@ class ProfileCreationForm(django_forms.ModelForm):
         self.fields['user'].initial = user
 
         if auth_user.is_profile():
-            if auth_user.profile.role is not None:
+            if auth_user.is_superuser:
+                self.fields['role'].queryset = models.Role.objects.all()
+            elif auth_user.profile.role is not None:
                 self.fields['role'].queryset = models.Role.objects.filter(id__gt=auth_user.profile.role.id)
             else:
                 self.fields['role'].queryset = models.Role.objects.none()
@@ -37,7 +39,9 @@ class ProfileChangeForm(django_forms.ModelForm):
         super(ProfileChangeForm, self).__init__(data, **kwargs)
 
         if auth_user.is_profile():
-            if auth_user.profile.role is not None:
+            if auth_user.is_superuser:
+                self.fields['role'].queryset = models.Role.objects.all()
+            elif auth_user.profile.role is not None:
                 self.fields['role'].queryset = models.Role.objects.filter(id__gt=auth_user.profile.role.id)
             else:
                 self.fields['role'].queryset = models.Role.objects.none()
