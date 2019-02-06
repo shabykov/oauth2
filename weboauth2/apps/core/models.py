@@ -11,6 +11,7 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 
 
 from oauth2_provider.scopes import get_scopes_backend
+from oauth2_provider.models import Application
 
 
 from .managers import UserManager, RoleManager
@@ -151,7 +152,7 @@ class Role(models.Model):
     )
 
     groups = models.ManyToManyField(
-        'auth.Group',
+        Group,
         verbose_name='Группы привелегий соотвестующие данной роли'
     )
 
@@ -188,7 +189,7 @@ class Profile(models.Model):
     )
 
     applications = models.ManyToManyField(
-        'oauth2_provider.Application',
+        Application,
         verbose_name='Приложения'
     )
 
