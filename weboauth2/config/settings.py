@@ -9,8 +9,10 @@ https://docs.djangoproject.com/en/2.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
-
+import json
 import os
+
+from django.core.exceptions import ImproperlyConfigured
 
 
 def root(*dirs):
@@ -25,7 +27,25 @@ BASE_DIR = root()
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '*6nqkl(5tfwdgh76_rx%#vv_ci#_&=4g*svcy_5p0pe*h4$xdo'
+
+with open('../secrets.json') as f:
+    secrets = json.loads(f.read())
+
+
+def get_secret(setting, secrets=secrets):
+
+    if os.getenv(setting, None):
+        return os.getenv(setting, None)
+
+    try:
+        return secrets[setting]
+    except KeyError:
+        error_msg = 'Set the {0} environment variable'.format(setting)
+        raise ImproperlyConfigured(error_msg)
+
+
+SECRET_KEY = get_secret('SECRET_KEY')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
