@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}Подтверждение входа{% endblock %}
+{% block content %}
+<div class="content">
+    <div class="row justify-content-center">
+        <div class="col-8 ">
+            <div class="jumbotron">
+                <h3>Подтверждение входа</h3>
+                <hr class="my-4">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <p>
+                            На вашу электронную почту {{ request.user.eamil }} было отправлено письмо с кодом подтверждения.
+                            Введите полученный код.
+                        </p>
+                        {% render_field form.code class="form-control" %}
+                        {% for error in form.code.errors %}
+                        <p class="alert alert-warning">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">Подтвердить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

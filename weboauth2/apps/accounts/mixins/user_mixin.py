@@ -4,11 +4,12 @@ from django.contrib.auth import mixins
 from django.contrib.auth.views import redirect_to_login
 
 from ..models import User
+from .tow_factor import TwoFactorMixin
 
 LoginRequiredMixin = mixins.LoginRequiredMixin
 
 
-class UserPermissionRequiredMixin(mixins.LoginRequiredMixin, mixins.PermissionRequiredMixin):
+class UserPermissionRequiredMixin(TwoFactorMixin, mixins.PermissionRequiredMixin):
     login_url = reverse_lazy('login')
 
     def handle_no_permission(self):

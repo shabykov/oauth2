@@ -4,9 +4,10 @@ from django.contrib.auth import mixins
 from django.contrib.auth.views import redirect_to_login
 
 from ..models import Profile
+from .tow_factor import TwoFactorMixin
 
 
-class ProfilePermissionRequiredMixin(mixins.LoginRequiredMixin, mixins.PermissionRequiredMixin):
+class ProfilePermissionRequiredMixin(TwoFactorMixin, mixins.PermissionRequiredMixin):
     login_url = reverse_lazy('login')
 
     def handle_no_permission(self):
@@ -16,11 +17,11 @@ class ProfilePermissionRequiredMixin(mixins.LoginRequiredMixin, mixins.Permissio
 
 
 class ProfileViewMixin(ProfilePermissionRequiredMixin):
-    permission_required = ('core.view_profile',)
+    permission_required = ('accounts.view_profile',)
 
 
 class ProfileCreationMixin(ProfilePermissionRequiredMixin):
-    permission_required = ('core.add_profile', 'core.change_profile', 'core.delete_profile', 'core.view_profile',)
+    permission_required = ('accounts.add_profile', 'accounts.change_profile', 'accounts.delete_profile', 'accounts.view_profile',)
 
 
 class ProfileModelPermissionRequiredMixin(ProfilePermissionRequiredMixin):
@@ -38,8 +39,8 @@ class ProfileModelPermissionRequiredMixin(ProfilePermissionRequiredMixin):
 
 
 class ProfileChangeMixin(ProfileModelPermissionRequiredMixin):
-    permission_required = ('core.change_profile', 'core.delete_profile', 'core.view_profile',)
+    permission_required = ('accounts.change_profile', 'accounts.delete_profile', 'accounts.view_profile',)
 
 
 class ProfileDeleteMixin(ProfileModelPermissionRequiredMixin):
-    permission_required = ('core.delete_profile',)
+    permission_required = ('accounts.delete_profile',)

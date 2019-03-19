@@ -3,8 +3,10 @@ from django.shortcuts import redirect
 from django.contrib.auth import mixins
 from django.contrib.auth.views import redirect_to_login
 
+from .tow_factor import TwoFactorMixin
 
-class RolePermissionRequiredMixin(mixins.LoginRequiredMixin, mixins.PermissionRequiredMixin):
+
+class RolePermissionRequiredMixin(TwoFactorMixin, mixins.PermissionRequiredMixin):
     login_url = reverse_lazy('login')
 
     def handle_no_permission(self):
@@ -14,16 +16,16 @@ class RolePermissionRequiredMixin(mixins.LoginRequiredMixin, mixins.PermissionRe
 
 
 class RoleCreationMixin(RolePermissionRequiredMixin):
-    permission_required = ('core.add_role', 'core.change_role', 'core.delete_role', 'core.view_role',)
+    permission_required = ('accounts.add_role', 'accounts.change_role', 'accounts.delete_role', 'accounts.view_role',)
 
 
 class RoleChangeMixin(RolePermissionRequiredMixin):
-    permission_required = ('core.change_role', 'core.delete_role', 'core.view_role',)
+    permission_required = ('accounts.change_role', 'accounts.delete_role', 'accounts.view_role',)
 
 
 class RoleViewMixin(RolePermissionRequiredMixin):
-    permission_required = ('core.view_role',)
+    permission_required = ('accounts.view_role',)
 
 
 class RoleDeleteMixin(RolePermissionRequiredMixin):
-    permission_required = ('core.delete_role',)
+    permission_required = ('accounts.delete_role',)

@@ -3,8 +3,10 @@ from django.shortcuts import redirect
 from django.contrib.auth import mixins
 from django.contrib.auth.views import redirect_to_login
 
+from .tow_factor import TwoFactorMixin
 
-class GroupPermissionRequiredMixin(mixins.LoginRequiredMixin, mixins.PermissionRequiredMixin):
+
+class GroupPermissionRequiredMixin(TwoFactorMixin, mixins.PermissionRequiredMixin):
     login_url = reverse_lazy('login')
 
     def handle_no_permission(self):

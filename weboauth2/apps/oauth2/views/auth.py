@@ -5,14 +5,12 @@ from oauth2_provider import views, models
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.shortcuts import get_object_or_404, reverse
-from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, TemplateView, RedirectView
 
-decorators = [never_cache, login_required]
+from ..mixins import AuthRequiredMixin
 
 
-@method_decorator(decorators, name='dispatch')
-class ApplicationChooseView(ListView):
+class ApplicationChooseView(AuthRequiredMixin, ListView):
     model = models.Application
     context_object_name = 'applications'
     template_name = 'oauth2/application_choose.html'
@@ -33,12 +31,12 @@ class ApplicationChooseView(ListView):
         return context
 
 
-@method_decorator(decorators, name='dispatch')
-class ApplicationChooseConfirm(TemplateView):
+class ApplicationChooseConfirm(AuthRequiredMixin, TemplateView):
     application = None
     template_name = 'oauth2/application_choose_confirm.html'
     scope = None
 
+    @method_decorator(never_cache)
     def get(self, request, *args, **kwargs):
         try:
             self.application = models.Application.objects.get(client_id=kwargs['client_id'])
@@ -54,8 +52,7 @@ class ApplicationChooseConfirm(TemplateView):
         return context
 
 
-@method_decorator(decorators, name='dispatch')
-class RedirectToAuthorizationView(RedirectView):
+class RedirectToAuthorizationView(AuthRequiredMixin, RedirectView):
     permanent = False
     query_string = True
     pattern_name = 'authorize'
@@ -64,6 +61,7 @@ class RedirectToAuthorizationView(RedirectView):
     application = None
     scope = None
 
+    @method_decorator(never_cache)
     def get(self, request, *args, **kwargs):
         try:
             self.application = get_object_or_404(models.Application, pk=kwargs['pk'])
@@ -86,12 +84,12 @@ class RedirectToAuthorizationView(RedirectView):
         }))
 
 
-@method_decorator(decorators, name='dispatch')
-class ScopeNotFoundView(TemplateView):
+class ScopeNotFoundView(AuthRequiredMixin, TemplateView):
     template_name = 'oauth2/scope_not_found.html'
 
     application = None
 
+    @method_decorator(never_cache)
     def get(self, request, *args, **kwargs):
         try:
             self.application = get_object_or_404(models.Application, pk=kwargs['pk'])
@@ -105,13 +103,14 @@ class ScopeNotFoundView(TemplateView):
         return context
 
 
-@method_decorator(decorators, name='dispatch')
-class AuthorizationView(views.AuthorizationView):
+class AuthorizationView(AuthRequiredMixin, views.AuthorizationView):
     template_name = 'oauth2/authorize.html'
 
+    @method_decorator(never_cache)
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
+    @method_decorator(never_cache)
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 

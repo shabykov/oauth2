@@ -74,12 +74,11 @@ INSTALLED_APPS += [
 
 
 INSTALLED_APPS += [
-    'apps.core',
     'apps.oauth2',
     'apps.accounts'
 ]
 
-AUTH_USER_MODEL = 'core.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

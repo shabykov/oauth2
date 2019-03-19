@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from oauth2_provider.models import get_access_token_model, get_application_model
 
-from ..core.models import Profile, Role
+from ..accounts.models import Profile, Role
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
