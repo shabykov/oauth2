@@ -4,6 +4,6 @@
 
 uwsgi --ini uwsgi.ini
 
-python manage.py migrate --settings=config.settings.docker
+bash django_cmd_migrate.sh
 
 sleep infinity
