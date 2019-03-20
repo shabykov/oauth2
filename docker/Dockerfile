@@ -11,7 +11,7 @@ RUN mkdir -p app/weboauth2
 COPY secrets.json app/
 COPY requirements.txt app/
 
-RUN pip install -r requirements.txt
+RUN pip install -r app/requirements.txt
 
 ADD weboauth2 app/weboauth2
 
