@@ -5,6 +5,7 @@ from .views.api import v1
 
 # API endpoints
 urlpatterns = [
+    url(r'^api/v1/ping/$', v1.ping_view),
     url(r'^api/v1/authorized-user-info/$', v1.get_user_view),
     url(r'^api/v1/token-info/$', v1.get_access_token),
 ]
@@ -54,30 +55,30 @@ urlpatterns += [
     url(
         r'^applications/$',
         views.ApplicationList.as_view(),
-        name="list"
+        name="application_list"
     ),
 
     url(
         r'^applications/register/$',
         views.ApplicationRegistration.as_view(),
-        name="register"
+        name="application_register"
     ),
 
     url(
         r'^applications/(?P<pk>\d+)/$',
         views.ApplicationDetail.as_view(),
-        name="detail"
+        name="application_detail"
     ),
 
     url(
         r'^applications/(?P<pk>\d+)/delete/$',
         views.ApplicationDelete.as_view(),
-        name="delete"
+        name="application_delete"
     ),
 
     url(
         r'^applications/(?P<pk>\d+)/update/$',
         views.ApplicationUpdate.as_view(),
-        name="update"
+        name="application_update"
     ),
 ]

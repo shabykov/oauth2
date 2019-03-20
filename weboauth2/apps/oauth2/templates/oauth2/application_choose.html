@@ -5,32 +5,34 @@
 {% block content %}
 <div class="content">
     <div class="row justify-content-center">
-        <div class="col-8 ">
+        <div class="col-12">
             <div class="jumbotron">
                 {% if applications %}
-                    {% if scope %}
-                    <h3>Доступные приложения</h3>
-                    <hr class="my-4">
-                    <p>Выберите приложение для входа.</p>
-                    <ul>
-                        {% for application in applications %}
-                        <li>
-                            <a href="{% url 'redirect-to-authorize' application.pk %}?scope={{ scope }}">{{ application }}</a>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                    {% else %}
-                    <h3>Нет прав ни к одному из ресурасов приложений</h3>
-                    <ul>
-                        {% for application in applications %}
-                        <li>
-                            <a href="#">{{ application }}</a>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
+                {% if scope %}
+                <h3>Доступные приложения</h3>
+                <hr class="my-4">
+                <p>Выберите приложение для входа.</p>
+                <ul>
+                    {% for application in applications %}
+                    <li>
+                        <a href="{% url 'redirect-to-authorize' application.client_id %}">{{ application }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <h3>Нет прав ни к одному из ресурасов приложений</h3>
+                <ul>
+                    {% for application in applications %}
+                    <li>
+                        <a href="#">{{ application }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
                 {% else %}
                 <h3>Нет доступных приложений</h3>
+                <hr class="my-4">
+                <p>Нет доступных приложений для входа, пожалуйста обратитесь к администратору системы.</p>
                 {% endif %}
             </div>
         </div>

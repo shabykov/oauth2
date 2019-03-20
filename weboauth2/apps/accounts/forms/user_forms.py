@@ -54,24 +54,41 @@ class UserChangeForm(django_forms.ModelForm):
                   'Вы можете изменить пароль в разделе "Изменить пароль"',
     )
 
-    groups = django_forms.ModelMultipleChoiceField(
-        label='Группы',
+    parent = django_forms.ModelChoiceField(
+        label='Родитель',
         required=False,
-        queryset=models.Group.objects.all(),
-        widget=django_forms.SelectMultiple(attrs={'readonly': 'readonly'}),
-        help_text='Значения данного поля задаются при присвоении роли пользователю.'
+        queryset=models.User.objects.all(),
+        help_text='Пользователь, который может управлять данным пользователем. Следует указать администратора.'
+    )
+
+    is_active = django_forms.BooleanField(
+        label='Активный',
+        required=False,
+        help_text='Указывается, если следует считать этого пользователя активным.'
+    )
+
+    is_staff = django_forms.BooleanField(
+        label='Статус персонала',
+        required=False,
+        help_text='Указывается, если пользователь может входить в административную часть сайта.'
     )
 
     class Meta:
         model = models.User
         fields = ('username', 'email', 'phone',
                   'last_name', 'first_name', 'patronymic',
-                  'is_active', 'is_staff', 'groups',)
+                  'parent', 'is_active', 'is_staff',)
 
         field_classes = {'username': forms.UsernameField}
 
     def __init__(self, *args, **kwargs):
+        auth_user = kwargs.pop('auth_user')
         super().__init__(*args, **kwargs)
+        if auth_user.parent is not None:
+            self.fields['parent'].queryset = models.User.objects.filter(Q(pk=auth_user.pk) | Q(pk=auth_user.parent.pk))
+        else:
+            self.fields['parent'].queryset = models.User.objects.filter(pk=auth_user.pk)
+
         user_permissions = self.fields.get('user_permissions')
         if user_permissions:
             user_permissions.queryset = user_permissions.queryset.select_related('content_type')

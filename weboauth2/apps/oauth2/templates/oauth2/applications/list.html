@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Приложения{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="jumbotron">
+                <h3>Приложения</h3>
+                <hr class="my-4">
+                <div class="form-group">
+                    <a href="{% url 'application_register' %}" class="btn btn-primary">Зарегистрировать новое приложение</a>
+                </div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Название</th>
+                        <th>Владелец</th>
+                        <th>Переадресации</th>
+                        <th>Идентификатор</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for application in applications %}
+                    <tr>
+                        <td><a href="{% url 'application_detail' application.pk %}">{{ application.name }}</a></td>
+                        <td>{{ application.user }}</td>
+                        <td>{{ application.redirect_uris }}</td>
+                        <td>{{ application.client_id }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

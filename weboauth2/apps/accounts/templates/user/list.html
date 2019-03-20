@@ -6,7 +6,7 @@
 {% block content %}
 <div class="content">
     <div class="row justify-content-center">
-        <div class="col-10">
+        <div class="col-12">
             <div class="jumbotron">
                 <h3>Пользователи</h3>
                 <hr class="my-4">
@@ -16,39 +16,52 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <th>ФИО</th>
                         <th>Логин</th>
-                        <th>Роль</th>
-                        <th>Профиль</th>
-                        <th>Активный</th>
+                        <th>Email</th>
+                        <th>ФИО</th>
+                        <th>Профиль<br>Приложения</th>
+                        <th>Статус</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for user in users %}
                     <tr>
                         <td>
-                            {{ user.last_name }}<br>
-                            {{ user.first_name }}<br>
-                            {{ user.patronymic }}
+                            <a href="{% url 'user_detail' user.pk %}">{{ user.username }}</a>
                         </td>
-                        <td><a href="{% url 'user_update' user.pk %}">{{ user.username }}</a></td>
                         <td>
-                            {% if user.profile %}
-                            {{ user.profile.role }}</td>
+                            {{ user.email }}
+                        </td>
+                        <td>
+                            {% if user.last_name %}
+                            {{ user.last_name }}<br>
                             {% endif %}
+                            {% if user.first_name %}
+                            {{ user.first_name }}<br>
+                            {% endif %}
+                            {% if user.patronymic %}
+                            {{ user.patronymic }}
+                            {% endif %}
+                        </td>
                         <td>
                             {% if user.profile %}
-                            <a href="{% url 'profile_update' user.profile.pk %}">{{ user.profile }}</a>
+                            <a href="{% url 'profile_detail' user.profile.pk %}">{{ user.profile.role }}</a>
                             <ul>
-                            {% for app in user.profile.applications.all %}
+                                {% for app in user.profile.applications.all %}
                                 <li>{{ app }}</li>
-                            {% endfor %}
+                                {% endfor %}
                             </ul>
                             {% else %}
                             <a href="{% url 'profile_create' user.pk %}">Добавить профиль</a>
                             {% endif %}
                         </td>
-                        <td>{{ user.is_active }}</td>
+                        <td>
+                            {% if user.is_active %}
+                            Активный
+                            {% else %}
+                            Неактивный
+                            {% endif %}
+                        </td>
                     </tr>
                     {% endfor %}
                     </tbody>

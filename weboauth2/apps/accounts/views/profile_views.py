@@ -56,6 +56,12 @@ class ProfileDeleteView(mixins.ProfileDeleteMixin, generic.DeleteView):
     success_url = reverse_lazy('user_list')
 
 
+class ProfileDetailView(mixins.ProfileViewMixin, generic.DetailView):
+    context_object_name = 'profile'
+    model = models.Profile
+    template_name = 'profile/detail.html'
+
+
 class UsersProfileUpdateView(ProfileUpdateView):
     form_class = forms.UsersProfileChangeForm
 

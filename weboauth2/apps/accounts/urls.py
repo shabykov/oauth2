@@ -83,6 +83,11 @@ urlpatterns = [
         name='user_delete'
     ),
     url(
+        r'^users/(?P<pk>\d+)/detail/$',
+        views.UserDetailView.as_view(),
+        name='user_detail'
+    ),
+    url(
         r'users/(?P<pk>\d+)/does-not-have-permissions/',
         views.UserDoesNotHavePermissionsView.as_view(),
         name='user_does_not_have_permissions'
@@ -125,6 +130,11 @@ urlpatterns = [
         r'^users/profiles/(?P<pk>\d+)/delete/$',
         views.ProfileDeleteView.as_view(),
         name='profile_delete'
+    ),
+    url(
+        r'^users/profiles/(?P<pk>\d+)/detail/$',
+        views.ProfileDetailView.as_view(),
+        name='profile_detail'
     ),
     url(
         r'^users/(?P<user_pk>\d+)/profiles/(?P<pk>\d+)/update/$',

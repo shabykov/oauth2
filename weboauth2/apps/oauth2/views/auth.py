@@ -1,16 +1,24 @@
 import logging
 
 from urllib.parse import urlencode
+
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 from oauth2_provider import views, models
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.shortcuts import get_object_or_404, reverse
-from django.views.generic import ListView, TemplateView, RedirectView
+from django.views.generic import ListView, TemplateView, DetailView
+from django.http import HttpResponsePermanentRedirect, HttpResponseRedirect, HttpResponseGone
 
-from ..mixins import AuthRequiredMixin
+
+from .. import mixins
+
+decorators = [never_cache, login_required]
 
 
-class ApplicationChooseView(AuthRequiredMixin, ListView):
+@method_decorator(never_cache, name='dispatch')
+class ApplicationChooseView(mixins.TwoFactorMixin, ListView):
     model = models.Application
     context_object_name = 'applications'
     template_name = 'oauth2/application_choose.html'
@@ -19,9 +27,9 @@ class ApplicationChooseView(AuthRequiredMixin, ListView):
     def get_queryset(self):
         try:
             applications = self.request.user.profile.applications.all()
-            self.scope = self.request.user.profile.role.scope
+            self.scope = '+'.join(self.request.user.profile.role.scope)
         except Exception as error:
-            logging.error(str(error))
+            logging.warning(error)
             applications = None
         return applications
 
@@ -31,28 +39,28 @@ class ApplicationChooseView(AuthRequiredMixin, ListView):
         return context
 
 
-class ApplicationChooseConfirm(AuthRequiredMixin, TemplateView):
-    application = None
+@method_decorator(never_cache, name='dispatch')
+class ApplicationChooseConfirm(mixins.UserAuthMixin, mixins.TwoFactorMixin, DetailView):
+    context_object_name = 'application'
+    model = models.Application
     template_name = 'oauth2/application_choose_confirm.html'
     scope = None
 
-    @method_decorator(never_cache)
-    def get(self, request, *args, **kwargs):
+    def get_object(self, queryset=None):
         try:
-            self.application = models.Application.objects.get(client_id=kwargs['client_id'])
-            self.scope = self.request.user.profile.role.scope
+            self.scope = '+'.join(self.request.user.profile.role.scope)
         except Exception as error:
             logging.error(error)
-        return super(ApplicationChooseConfirm, self).get(request, *args, **kwargs)
+        return models.Application.objects.get(client_id=self.kwargs['client_id'])
 
     def get_context_data(self, **kwargs):
         context = super(ApplicationChooseConfirm, self).get_context_data(**kwargs)
-        context['application'] = self.application
         context['scope'] = self.scope
         return context
 
 
-class RedirectToAuthorizationView(AuthRequiredMixin, RedirectView):
+@method_decorator(never_cache, name='dispatch')
+class RedirectToAuthorizationView(mixins.UserAuthMixin, mixins.TwoFactorMixin, DetailView):
     permanent = False
     query_string = True
     pattern_name = 'authorize'
@@ -61,21 +69,32 @@ class RedirectToAuthorizationView(AuthRequiredMixin, RedirectView):
     application = None
     scope = None
 
-    @method_decorator(never_cache)
-    def get(self, request, *args, **kwargs):
+    def get_object(self, queryset=None):
+        self.application = models.Application.objects.get(client_id=self.kwargs['client_id'])
         try:
-            self.application = get_object_or_404(models.Application, pk=kwargs['pk'])
+            self.scope = ' '.join(self.request.user.profile.role.scope)
         except Exception as error:
             logging.error(str(error))
+        return self.application
 
-        self.scope = request.GET.get('scope')
-
-        return super(RedirectToAuthorizationView, self).get(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        self.get_object()
+        url = self.get_redirect_url(*args, **kwargs)
+        if url:
+            if self.permanent:
+                return HttpResponsePermanentRedirect(url)
+            else:
+                return HttpResponseRedirect(url)
+        else:
+            logging.warning(
+                'Gone: %s', request.path,
+                extra={'status_code': 410, 'request': request}
+            )
+            return HttpResponseGone()
 
     def get_redirect_url(self, *args, **kwargs):
         if self.scope is None:
             return '{}?{}'.format(reverse('application-scope-not-found'), urlencode(kwargs))
-
         return '{}?{}'.format(reverse(self.pattern_name), urlencode({
             'client_id': self.application.client_id,
             'redirect_uri': self.application.default_redirect_uri,
@@ -84,7 +103,8 @@ class RedirectToAuthorizationView(AuthRequiredMixin, RedirectView):
         }))
 
 
-class ScopeNotFoundView(AuthRequiredMixin, TemplateView):
+@method_decorator(never_cache, name='dispatch')
+class ScopeNotFoundView(mixins.TwoFactorMixin, TemplateView):
     template_name = 'oauth2/scope_not_found.html'
 
     application = None
@@ -92,7 +112,7 @@ class ScopeNotFoundView(AuthRequiredMixin, TemplateView):
     @method_decorator(never_cache)
     def get(self, request, *args, **kwargs):
         try:
-            self.application = get_object_or_404(models.Application, pk=kwargs['pk'])
+            self.application = models.Application.objects.get(client_id=kwargs['client_id'])
         except Exception as error:
             logging.error(str(error))
         return super(ScopeNotFoundView, self).get(request, *args, **kwargs)
@@ -103,7 +123,7 @@ class ScopeNotFoundView(AuthRequiredMixin, TemplateView):
         return context
 
 
-class AuthorizationView(AuthRequiredMixin, views.AuthorizationView):
+class AuthorizationView(mixins.TwoFactorMixin, views.AuthorizationView):
     template_name = 'oauth2/authorize.html'
 
     @method_decorator(never_cache)

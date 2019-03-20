@@ -11,6 +11,7 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 
 from oauth2_provider.scopes import get_scopes_backend
 from oauth2_provider.models import Application
+from multiselectfield import MultiSelectField
 
 
 from .managers import UserManager, RoleManager
@@ -79,10 +80,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         help_text=_('Designates whether the user can log into this admin site.'),
     )
 
-    avatar = models.ImageField(
-        upload_to='apps/core/media/avatars/',
+    parent = models.ForeignKey(
+        'self',
         null=True,
-        blank=True
+        on_delete=models.CASCADE,
+        verbose_name='Родитель'
     )
 
     objects = UserManager()
@@ -129,6 +131,24 @@ class User(AbstractBaseUser, PermissionsMixin):
         apps = self.get_applications()
         return all(True if app in apps else False for app in user.get_applications())
 
+    def is_there_profile(self):
+        return self.profile is not None
+
+    def is_there_role(self):
+        return self.profile.role is not None if self.is_profile() else False
+
+    @property
+    def can_change_any_thing(self):
+        if self.is_superuser:
+            return True
+        return self.profile.role.id == Role.ADMIN if self.is_there_role() else False
+
+    @property
+    def can_change_apps_users(self):
+        if self.is_superuser:
+            return True
+        return self.profile.role.id in [Role.ADMIN, Role.APPLICATION_ADMIN] if self.is_there_role() else False
+
 
 class Role(models.Model):
     SCOPES = get_scopes_backend().get_all_scopes().items()
@@ -155,10 +175,10 @@ class Role(models.Model):
         verbose_name='Группы привелегий соотвестующие данной роли'
     )
 
-    scope = models.TextField(
+    scope = MultiSelectField(
         choices=SCOPES_CHOICES,
         default='read+write',
-        verbose_name='Права доступа'
+        verbose_name='Права доступа в приложении'
     )
 
     objects = RoleManager()

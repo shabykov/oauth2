@@ -16,16 +16,16 @@ class GroupPermissionRequiredMixin(TwoFactorMixin, mixins.PermissionRequiredMixi
 
 
 class GroupCreationMixin(GroupPermissionRequiredMixin):
-    permission_required = ('core.add_group', 'core.change_group', 'core.delete_group', 'core.view_group',)
+    permission_required = ('accounts.add_group',)
 
 
 class GroupChangeMixin(GroupPermissionRequiredMixin):
-    permission_required = ('core.change_group', 'core.delete_group', 'core.view_group',)
+    permission_required = ('accounts.change_group',)
 
 
 class GroupViewMixin(GroupPermissionRequiredMixin):
-    permission_required = ('core.view_group',)
+    permission_required = ('accounts.view_group',)
 
 
 class GroupDeleteMixin(GroupPermissionRequiredMixin):
-    permission_required = ('core.delete_group',)
+    permission_required = ('accounts.delete_group',)

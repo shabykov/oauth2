@@ -8,7 +8,7 @@
     <div class="row justify-content-center">
         <div class="col-10">
             <div class="jumbotron">
-                <h3>Пользователь {{ object }}</h3>
+                <h3>{{ object }}</h3>
                 <hr class="my-4">
                 <form method="post">
                     {% csrf_token %}
@@ -71,6 +71,14 @@
                         <p class="alert alert-warning">{{ error }}</p>
                         {% endfor %}
                     </div>
+                    <div class="form-group">
+                        <label for="id_parent">{{ form.parent.label }}</label>
+                        {% render_field form.parent class="form-control" %}
+                        <small class="form-text text-muted">{{ form.parent.help_text }}</small>
+                        {% for error in form.parent.errors %}
+                        <p class="alert alert-warning">{{ error }}</p>
+                        {% endfor %}
+                    </div>
                     <div class="form-check">
                         {% render_field form.is_active class="form-check-input" %}
                         <label for="id_is_active" class="form-check-label">{{ form.is_active.label }}</label>
@@ -96,24 +104,8 @@
                         {% endfor %}
                     </div>
                     <div class="form-group">
-                        <label for="id_groups">{{ form.groups.label }}</label>
-                        {% render_field form.groups class="form-control" %}
-                        <small class="form-text text-muted">{{ form.groups.help_text }}</small>
-                        {% for error in form.groups.errors %}
-                        <p class="alert alert-warning">{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                    <div class="form-group">
-                        <label for="id_user_permissions">{{ form.user_permissions.label }}</label>
-                        {% render_field form.user_permissions class="form-control" %}
-                        <small class="form-text text-muted">{{ form.user_permissions.help_text }}</small>
-                        {% for error in form.user_permissions.errors %}
-                        <p class="alert alert-warning">{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                    <div class="form-group">
                         <button type="submit" class="btn btn-success">Сохранить</button>
-                        <a href="{% url 'user_list' %}" class="btn btn-secondary">Отменить</a>
+                        <a href="{% url 'user_detail' object.pk %}" class="btn btn-secondary">Отменить</a>
                         <a href="{% url 'user_delete' object.pk %}" class="btn btn-danger">Удалить</a>
                     </div>
                 </form>

@@ -16,11 +16,11 @@ class RolePermissionRequiredMixin(TwoFactorMixin, mixins.PermissionRequiredMixin
 
 
 class RoleCreationMixin(RolePermissionRequiredMixin):
-    permission_required = ('accounts.add_role', 'accounts.change_role', 'accounts.delete_role', 'accounts.view_role',)
+    permission_required = ('accounts.add_role',)
 
 
 class RoleChangeMixin(RolePermissionRequiredMixin):
-    permission_required = ('accounts.change_role', 'accounts.delete_role', 'accounts.view_role',)
+    permission_required = ('accounts.change_role',)
 
 
 class RoleViewMixin(RolePermissionRequiredMixin):

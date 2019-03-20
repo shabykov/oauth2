@@ -186,14 +186,6 @@ OAUTH2_PROVIDER = {
         'read+write': 'чтение/запись',
         'read+write+change': 'чтенеие/запись/измение',
         'read+write+change+delete': 'чтенеие/запись/измение/удаление',
-
-        'devices.view_device': 'Просмотр устройств',
-        'devices.add_device': 'Добавление новых устройств',
-        'devices.change_device': 'Изменение устройств',
-        'devices.delete_device': 'Удаление устройств',
-        'devices.view_device+devices.add_device': 'Просмотр/добавление устройств',
-        'devices.view_device+devices.add_device+devices.change_device': 'Просмотр/добавление/изменение устройств',
-        'devices.view_device+devices.add_device+devices.change_device+devices.delete_device': 'Управление устройствами'
     }
 }
 

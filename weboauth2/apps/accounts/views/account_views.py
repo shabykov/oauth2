@@ -7,11 +7,15 @@ from django.http import HttpResponseRedirect
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.decorators.debug import sensitive_post_parameters
 
 
 from .. import models, mixins, forms
+
+
+decorators = [never_cache, login_required]
 
 
 def index(request):
@@ -79,27 +83,33 @@ class TwoFactorVerifyView(LoginRequiredMixin, generic.FormView):
         return self.request.user.two_factor.check_verification_code(code)
 
 
+@method_decorator(decorators, name='dispatch')
 class PasswordResetView(views.PasswordResetView):
     email_template_name = 'password_reset_email.html'
     subject_template_name = 'password_reset_subject.txt'
     template_name = 'password_reset_form.html'
 
 
+@method_decorator(decorators, name='dispatch')
 class PasswordResetDoneView(views.PasswordResetDoneView):
     template_name = 'password_reset_done.html'
 
 
+@method_decorator(decorators, name='dispatch')
 class PasswordResetConfirmView(views.PasswordResetConfirmView):
     template_name = 'password_reset_confirm.html'
 
 
+@method_decorator(decorators, name='dispatch')
 class PasswordResetCompleteView(views.PasswordResetCompleteView):
     template_name = 'password_reset_complete.html'
 
 
+@method_decorator(decorators, name='dispatch')
 class PasswordChangeView(mixins.TwoFactorMixin, views.PasswordChangeView):
     template_name = 'password_change_form.html'
 
 
+@method_decorator(decorators, name='dispatch')
 class PasswordChangeDoneView(mixins.TwoFactorMixin, views.PasswordChangeDoneView):
     template_name = 'password_change_done.html'

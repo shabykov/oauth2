@@ -14,16 +14,17 @@ class ProfileCreationForm(django_forms.ModelForm):
         super(ProfileCreationForm, self).__init__(data, **kwargs)
 
         self.fields['user'].initial = user
+        self.fields['user'].queryset = models.User.objects.filter(pk=user.pk)
 
-        if auth_user.is_profile():
-            if auth_user.is_superuser:
-                self.fields['role'].queryset = models.Role.objects.all()
-            elif auth_user.profile.role is not None:
-                self.fields['role'].queryset = models.Role.objects.filter(id__gt=auth_user.profile.role.id)
-            else:
-                self.fields['role'].queryset = models.Role.objects.none()
+        if auth_user.is_superuser:
+            self.fields['role'].queryset = models.Role.objects.all()
+            self.fields['applications'].queryset = models.Application.objects.all()
 
+        elif auth_user.is_profile():
+            self.fields['role'].queryset = models.Role.objects.filter(
+                id__gte=auth_user.profile.role.id) if auth_user.profile.role is not None else models.Role.objects.none()
             self.fields['applications'].queryset = auth_user.profile.applications.all()
+
         else:
             self.fields['role'].queryset = models.Role.objects.none()
             self.fields['applications'].queryset = models.Application.objects.none()
@@ -38,15 +39,17 @@ class ProfileChangeForm(django_forms.ModelForm):
         auth_user = kwargs.pop('auth_user')
         super(ProfileChangeForm, self).__init__(data, **kwargs)
 
-        if auth_user.is_profile():
-            if auth_user.is_superuser:
-                self.fields['role'].queryset = models.Role.objects.all()
-            elif auth_user.profile.role is not None:
-                self.fields['role'].queryset = models.Role.objects.filter(id__gt=auth_user.profile.role.id)
-            else:
-                self.fields['role'].queryset = models.Role.objects.none()
+        self.fields['user'].initial = self.instance.user
+        self.fields['user'].queryset = models.User.objects.filter(pk=self.instance.user.pk)
+        if auth_user.is_superuser:
+            self.fields['role'].queryset = models.Role.objects.all()
+            self.fields['applications'].queryset = models.Application.objects.all()
 
+        elif auth_user.is_profile():
+            self.fields['role'].queryset = models.Role.objects.filter(
+                id__gte=auth_user.profile.role.id) if auth_user.profile.role is not None else models.Role.objects.none()
             self.fields['applications'].queryset = auth_user.profile.applications.all()
+
         else:
             self.fields['role'].queryset = models.Role.objects.none()
             self.fields['applications'].queryset = models.Application.objects.none()

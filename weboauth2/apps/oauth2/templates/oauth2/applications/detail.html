@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}{{ object }}{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <div class="jumbotron">
+                <h3>{{ application.name }}</h3>
+                <hr class="my-4">
+                <div class="form-group">
+                    <div class="form-group">
+                        <label for="id_client_id">Идентификатор</label>
+                        <input class="form-control" id="id_client_id" type="text" value="{{ application.client_id }}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <p>Тип</p>
+                        <ul>
+                            <li>{{ application.client_type }}</li>
+                        </ul>
+                    </div>
+                    <div class="form-group">
+                        <p>Authorization Grant</p>
+                        <ul>
+                            <li>{{ application.authorization_grant_type }}</li>
+                        </ul>
+                    </div>
+                    <div class="form-group">
+                        <p>Redirect URIs</p>
+                        <textarea class="form-control" readonly>{{ application.redirect_uris }}</textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <a class="btn btn-link" href="{% url 'application_list' %}">Список приложений</a>
+                    <a class="btn btn-primary" href="{% url 'application_update' application.id %}">Обновить</a>
+                    <a class="btn btn-danger" href="{% url 'application_delete' application.id %}">Удалить</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

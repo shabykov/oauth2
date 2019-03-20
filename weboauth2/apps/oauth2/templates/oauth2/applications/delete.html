@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}{{ application }}{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <div class="jumbotron">
+                <h3>Удалить приложение {{ application }}</h3>
+                <hr class="my-4">
+                <form method="post" action="{% url 'application_delete' application.pk %}">
+                    {% csrf_token %}
+                    <p>Вы уверены, что хотите удалить приложение "{{ application }}"?</p>
+                    <div class="form-group">
+                        <a href="{% url 'application_list' %}" class="btn btn-link">Отмена</a>
+                        <button type="submit" class="btn btn-danger">Удалить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

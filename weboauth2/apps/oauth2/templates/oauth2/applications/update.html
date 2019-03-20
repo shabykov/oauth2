@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}{{ application }}{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <div class="jumbotron">
+                <h3>{{ application }}</h3>
+                <hr class="my-4">
+                <form method="post">
+                    {% csrf_token %}
+                    {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                    {% endfor %}
+
+                    <div class="form-group">
+                        <label for="{{ form.name.id_for_label }}">Название</label>
+                        {% render_field form.name class="form-control" %}
+                        <small class="form-text text-muted">{{ form.name.help_text }}</small>
+                        {% for error in form.name.errors %}
+                        <p class="alert alert-warning">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.client_id.id_for_label }}">Идентификатор</label>
+                        {% render_field form.client_id class="form-control" %}
+                        <small class="form-text text-muted">{{ form.client_id.help_text }}</small>
+                        {% for error in form.client_id.errors %}
+                        <p class="alert alert-warning">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.client_secret.id_for_label }}">Секрет</label>
+                        {% render_field form.client_secret class="form-control" %}
+                        <small class="form-text text-muted">{{ form.client_secret.help_text }}</small>
+                        {% for error in form.client_secret.errors %}
+                        <p class="alert alert-warning">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.client_type.id_for_label }}">Тип</label>
+                        {% render_field form.client_type class="form-control" %}
+                        <small class="form-text text-muted">{{ form.client_type.help_text }}</small>
+                        {% for error in form.client_type.errors %}
+                        <p class="alert alert-warning">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.authorization_grant_type.id_for_label }}">Authorization Grant</label>
+                        {% render_field form.authorization_grant_type class="form-control" %}
+                        <small class="form-text text-muted">
+                            Учетная запись, представляющая авторизацию владельца ресурса
+                            (для доступа к защищенным ресурсам), которая используется
+                            клиентом для получения токена доступа.
+                        </small>
+                        {% for error in form.authorization_grant_type.errors %}
+                        <p class="alert alert-warning">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.redirect_uris.id_for_label }}">Redirect URI</label>
+                        {% render_field form.redirect_uris class="form-control" %}
+                        <small class="form-text text-muted">
+                            Список разрешенных URI, разделенных пробелами.
+                            Сервис будет перенаправлять пользователя после авторизации
+                            (или отказа в авторизации) вашего приложения.
+                        </small>
+                        {% for error in form.redirect_uris.errors %}
+                        <p class="alert alert-warning">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">Сохранить</button>
+                        <a href="{% url 'application_list' %}" class="btn btn-secondary">Отменить</a>
+                        <a href="{% url 'application_delete' application.pk %}" class="btn btn-danger">Удалить</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

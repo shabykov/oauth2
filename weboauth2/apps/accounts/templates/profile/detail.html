@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}{{ profile }}{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <div class="jumbotron">
+                <h3>Профиль пользователя {{ profile }}</h3>
+                <hr class="my-4">
+
+                <div class="form-group">
+                    <p>Пользователь</p>
+                    <ul>
+                        <li>{{ profile.user }}</li>
+                    </ul>
+                </div>
+                <div class="form-group">
+                    <p>Роль</p>
+                    <ul>
+                        <li>{{ profile.role }}</li>
+                    </ul>
+                </div>
+                <div class="form-group">
+                    <p>Приложения</p>
+                    <ul>
+                        {% for app in profile.applications.all %}
+                        <li>{{ app }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="form-group">
+                    <a href="{% url 'user_detail' profile.user.pk %}" class="btn btn-link">Детали пользователя</a>
+                    <a href="{% url 'profile_update' profile.pk %}" class="btn btn-primary">Обновить</a>
+                    <a href="{% url 'profile_delete' profile.pk %}" class="btn btn-danger">Удалить</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

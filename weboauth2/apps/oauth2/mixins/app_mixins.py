@@ -1,7 +1,9 @@
+from django.urls import reverse_lazy
+from django.shortcuts import redirect
 from django.contrib.auth import mixins
 from django.contrib.auth.views import redirect_to_login
-from django.shortcuts import redirect
-from django.urls import reverse_lazy
+
+from oauth2_provider.models import Application
 
 from ...accounts.mixins import TwoFactorMixin
 
@@ -9,7 +11,7 @@ LoginRequiredMixin = mixins.LoginRequiredMixin
 TwoFactorMixin = TwoFactorMixin
 
 
-class AuthPermissionRequiredMixin(mixins.PermissionRequiredMixin):
+class ApplicationPermissionRequiredMixin(mixins.PermissionRequiredMixin):
     login_url = reverse_lazy('login')
 
     def handle_no_permission(self):
@@ -18,17 +20,16 @@ class AuthPermissionRequiredMixin(mixins.PermissionRequiredMixin):
         return redirect_to_login(self.request.get_full_path(), self.get_login_url(), self.get_redirect_field_name())
 
 
-class UserAuthMixin(AuthPermissionRequiredMixin):
-    permission_required = ('sessions.add_session',
-                           'sessions.change_session',
+class ApplicationViewMixin(ApplicationPermissionRequiredMixin):
+    permission_required = ('oauth2_provider.view_application',)
 
-                           'oauth2_provider.add_grant',
-                           'oauth2_provider.change_grant',
 
-                           'oauth2_provider.add_accesstoken',
-                           'oauth2_provider.change_accesstoken')
+class ApplicationCreationMixin(ApplicationPermissionRequiredMixin):
+    permission_required = ('oauth2_provider.add_application',)
 
-    def is_from_application(self):
+
+class ModelPermissionRequiredMixin(ApplicationPermissionRequiredMixin):
+    def is_from_the_same_application(self):
         application = self.get_object()
         if self.request.user.is_superuser:
             return True
@@ -38,4 +39,12 @@ class UserAuthMixin(AuthPermissionRequiredMixin):
             return False
 
     def has_permission(self):
-        return super().has_permission() and self.is_from_application()
+        return super().has_permission() and self.is_from_the_same_application()
+
+
+class ApplicationChangeMixin(ModelPermissionRequiredMixin):
+    permission_required = ('oauth2_provider.change_application',)
+
+
+class ApplicationDeleteMixin(ModelPermissionRequiredMixin):
+    permission_required = ('oauth2_provider.delete_application',)

@@ -21,7 +21,7 @@ class ProfileViewMixin(ProfilePermissionRequiredMixin):
 
 
 class ProfileCreationMixin(ProfilePermissionRequiredMixin):
-    permission_required = ('accounts.add_profile', 'accounts.change_profile', 'accounts.delete_profile', 'accounts.view_profile',)
+    permission_required = ('accounts.add_profile',)
 
 
 class ProfileModelPermissionRequiredMixin(ProfilePermissionRequiredMixin):
@@ -39,7 +39,7 @@ class ProfileModelPermissionRequiredMixin(ProfilePermissionRequiredMixin):
 
 
 class ProfileChangeMixin(ProfileModelPermissionRequiredMixin):
-    permission_required = ('accounts.change_profile', 'accounts.delete_profile', 'accounts.view_profile',)
+    permission_required = ('accounts.change_profile',)
 
 
 class ProfileDeleteMixin(ProfileModelPermissionRequiredMixin):

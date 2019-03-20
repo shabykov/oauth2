@@ -19,14 +19,18 @@ class UserPermissionRequiredMixin(TwoFactorMixin, mixins.PermissionRequiredMixin
 
 
 class UserViewMixin(UserPermissionRequiredMixin):
-    permission_required = ('core.view_user',)
+    permission_required = ('accounts.view_user',)
+
+
+class UserListViewMixin(UserPermissionRequiredMixin):
+    permission_required = ('accounts.view_user',)
 
 
 class UserCreationMixin(UserPermissionRequiredMixin):
-    permission_required = ('core.add_user', 'core.change_user', 'core.delete_user', 'core.view_user',)
+    permission_required = ('accounts.add_user',)
 
 
-class UserModelPermissionRequiredMixin(UserPermissionRequiredMixin):
+class ModelPermissionRequiredMixin(UserPermissionRequiredMixin):
     def is_from_the_same_application(self):
         user = self.get_object()
         if self.request.user.is_superuser:
@@ -40,12 +44,39 @@ class UserModelPermissionRequiredMixin(UserPermissionRequiredMixin):
         return super().has_permission() and self.is_from_the_same_application()
 
 
-class UserChangeMixin(UserModelPermissionRequiredMixin):
-    permission_required = ('core.change_user', 'core.delete_user', 'core.view_user',)
-
-    def has_permission(self):
-        return super().has_permission() and self.is_from_the_same_application()
+class UserChangeMixin(ModelPermissionRequiredMixin):
+    permission_required = ('accounts.change_user',)
 
 
-class UserDeleteMixin(UserModelPermissionRequiredMixin):
-    permission_required = ('core.delete_user',)
+class UserDeleteMixin(ModelPermissionRequiredMixin):
+    permission_required = ('accounts.delete_user',)
+
+
+class UserOwnerIsUserMixin(TwoFactorMixin):
+    auth_user = None
+
+    def get_queryset(self):
+        self.auth_user = self.request.user
+
+        if self.auth_user.is_superuser:
+            return self.model.objects.all()
+
+        if self.auth_user.is_profile():
+            return self.model.objects.filter(Q(pk=self.auth_user.pk) | Q(parent=self.auth_user))
+
+        return self.model.objects.none()
+
+
+class ApplicationOwnerIsUserMixin(UserOwnerIsUserMixin):
+    def get_queryset(self):
+        self.auth_user = self.request.user
+
+        if self.auth_user.is_superuser:
+            return self.model.objects.all()
+
+        if self.auth_user.is_profile():
+            return self.model.objects.filter(
+                Q(pk=self.auth_user.pk) | Q(parent=self.auth_user),
+                profile__applications__in=self.auth_user.profile.applications.all())
+
+        return self.model.objects.none()

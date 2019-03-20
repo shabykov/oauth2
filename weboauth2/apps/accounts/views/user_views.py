@@ -7,17 +7,10 @@ from django.shortcuts import get_object_or_404
 from .. import models, forms, mixins
 
 
-class UserListView(mixins.UserViewMixin, generic.ListView):
+class UserListView(mixins.ApplicationOwnerIsUserMixin, mixins.UserViewMixin, generic.ListView):
     model = models.User
     context_object_name = 'users'
     template_name = 'user/list.html'
-
-    def get_queryset(self):
-        if self.request.user.is_superuser:
-            return self.model.objects.all()
-        if self.request.user.is_profile():
-            return self.model.objects.filter(profile__applications__in=self.request.user.profile.applications.all())
-        return self.model.objects.none()
 
 
 class UserCreateView(mixins.UserCreationMixin, generic.CreateView):
@@ -28,11 +21,22 @@ class UserCreateView(mixins.UserCreationMixin, generic.CreateView):
     def get_success_url(self):
         return reverse_lazy('user_update', kwargs={'pk': self.object.pk})
 
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.parent = self.request.user
+        self.object.save()
+        return super().form_valid(form)
 
-class UserUpdateView(mixins.UserChangeMixin, generic.UpdateView):
+
+class UserUpdateView(mixins.UserOwnerIsUserMixin, mixins.UserChangeMixin, generic.UpdateView):
     model = models.User
     form_class = forms.UserChangeForm
     template_name = 'user/update.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(UserUpdateView, self).get_form_kwargs()
+        kwargs['auth_user'] = self.auth_user
+        return kwargs
 
     def get_success_url(self):
         return reverse_lazy('users_profile_update', kwargs={'user_pk': self.object.pk, 'pk': self.object.profile.pk})
@@ -42,6 +46,11 @@ class UserDeleteView(mixins.UserDeleteMixin, generic.DeleteView):
     model = models.User
     template_name = 'user/delete.html'
     success_url = reverse_lazy('user_list')
+
+
+class UserDetailView(mixins.UserViewMixin, generic.DetailView):
+    model = models.User
+    template_name = 'user/detail.html'
 
 
 class UserDoesNotHavePermissionsView(mixins.LoginRequiredMixin, generic.TemplateView):
