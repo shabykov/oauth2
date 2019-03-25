@@ -21,8 +21,6 @@ class TwoFactorMixin(LoginRequiredMixin):
 
     def get_login_url(self):
         if self.request.user.is_authenticated:
-            TwoFactor.objects.update_or_create(user=self.request.user)
-            self.request.user.two_factor.send_code()
             return reverse_lazy('verify')
         else:
             return reverse_lazy('login')

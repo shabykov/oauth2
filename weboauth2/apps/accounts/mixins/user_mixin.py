@@ -1,15 +1,17 @@
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
-from django.contrib.auth import mixins
 from django.contrib.auth.views import redirect_to_login
+from django.contrib.auth.mixins import PermissionRequiredMixin
+
 
 from ..models import User
 from .tow_factor import TwoFactorMixin
 
-LoginRequiredMixin = mixins.LoginRequiredMixin
+
+TwoFactorMixin = TwoFactorMixin
 
 
-class UserPermissionRequiredMixin(TwoFactorMixin, mixins.PermissionRequiredMixin):
+class UserPermissionRequiredMixin(PermissionRequiredMixin):
     login_url = reverse_lazy('login')
 
     def handle_no_permission(self):
@@ -19,10 +21,6 @@ class UserPermissionRequiredMixin(TwoFactorMixin, mixins.PermissionRequiredMixin
 
 
 class UserViewMixin(UserPermissionRequiredMixin):
-    permission_required = ('accounts.view_user',)
-
-
-class UserListViewMixin(UserPermissionRequiredMixin):
     permission_required = ('accounts.view_user',)
 
 
@@ -50,33 +48,3 @@ class UserChangeMixin(ModelPermissionRequiredMixin):
 
 class UserDeleteMixin(ModelPermissionRequiredMixin):
     permission_required = ('accounts.delete_user',)
-
-
-class UserOwnerIsUserMixin(TwoFactorMixin):
-    auth_user = None
-
-    def get_queryset(self):
-        self.auth_user = self.request.user
-
-        if self.auth_user.is_superuser:
-            return self.model.objects.all()
-
-        if self.auth_user.is_profile():
-            return self.model.objects.filter(Q(pk=self.auth_user.pk) | Q(parent=self.auth_user))
-
-        return self.model.objects.none()
-
-
-class ApplicationOwnerIsUserMixin(UserOwnerIsUserMixin):
-    def get_queryset(self):
-        self.auth_user = self.request.user
-
-        if self.auth_user.is_superuser:
-            return self.model.objects.all()
-
-        if self.auth_user.is_profile():
-            return self.model.objects.filter(
-                Q(pk=self.auth_user.pk) | Q(parent=self.auth_user),
-                profile__applications__in=self.auth_user.profile.applications.all())
-
-        return self.model.objects.none()

@@ -26,90 +26,80 @@ class LoginView(views.LoginView):
     template_name = 'login.html'
 
     def get_success_url(self):
-        success_url = reverse_lazy('verify')
+        success_url = reverse_lazy('send_new_code')
         if self.request.GET.get('next') is not None:
             success_url += "?next=" + self.request.GET['next']
         return success_url
 
     def form_valid(self, form):
-        user = form.get_user()
-        login(self.request, user)
-
-        models.TwoFactor.objects.update_or_create(user=user)
-
-        self.send_verification_request()
+        login(self.request, form.get_user())
         return HttpResponseRedirect(self.get_success_url())
+
+
+class TwoFactorSendNewView(LoginRequiredMixin, generic.RedirectView):
+    redirect_field_name = reverse_lazy('verify')
+
+    def get(self, request, *args, **kwargs):
+        models.TwoFactor.objects.update_or_create(user=request.user)
+        self.send_verification_request()
+        return super().get(request, *args, **kwargs)
 
     def send_verification_request(self):
         return self.request.user.two_factor.send_code()
 
+    def get_redirect_url(self, *args, **kwargs):
+        if self.request.GET.get('next') is not None:
+            self.redirect_field_name += "?next=" + self.request.GET['next']
+        return self.redirect_field_name
 
-class TwoFactorVerifyView(LoginRequiredMixin, generic.FormView):
+
+class TwoFactorVerifyView(LoginRequiredMixin, generic.UpdateView):
+    model = models.TwoFactor
     template_name = 'verify.html'
     form_class = forms.TwoFactorVerifyForm
-
     not_verified_url = reverse_lazy('verify')
 
     @method_decorator(sensitive_post_parameters())
     @method_decorator(csrf_protect)
-    @method_decorator(never_cache)
-    def post(self, request, *args, **kwargs):
-        return super(TwoFactorVerifyView, self).post(request, *args, **kwargs)
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(TwoFactorVerifyView, self).dispatch(*args, **kwargs)
+
+    def get_object(self, queryset=None):
+        return self.request.user.two_factor
 
     def form_valid(self, form):
-
         if self.request.session.get('verified', False) is True:
             self.request.session['verified'] = False
             return HttpResponseRedirect(self.not_verified_url)
 
-        if self.verify_code(form.cleaned_data['code']):
-            self.request.session['verified'] = True
-
-            if self.request.GET.get('next') is not None:
-                return HttpResponseRedirect(self.request.GET['next'])
-
-            return HttpResponseRedirect(reverse_lazy('index'))
-        else:
-
-            if self.request.session.get('verified') is not None:
-                del self.request.session['verified']
-
-            if self.request.GET.get('next') is not None:
-                return HttpResponseRedirect(self.not_verified_url + "?next=" + self.request.GET['next'])
-
-            return HttpResponseRedirect(self.not_verified_url)
-
-    def verify_code(self, code):
-        return self.request.user.two_factor.check_verification_code(code)
+        self.request.session['verified'] = True
+        if self.request.GET.get('next') is not None:
+            return HttpResponseRedirect(self.request.GET['next'])
+        return HttpResponseRedirect(reverse_lazy('index'))
 
 
-@method_decorator(decorators, name='dispatch')
 class PasswordResetView(views.PasswordResetView):
     email_template_name = 'password_reset_email.html'
     subject_template_name = 'password_reset_subject.txt'
     template_name = 'password_reset_form.html'
 
 
-@method_decorator(decorators, name='dispatch')
 class PasswordResetDoneView(views.PasswordResetDoneView):
     template_name = 'password_reset_done.html'
 
 
-@method_decorator(decorators, name='dispatch')
 class PasswordResetConfirmView(views.PasswordResetConfirmView):
     template_name = 'password_reset_confirm.html'
 
 
-@method_decorator(decorators, name='dispatch')
 class PasswordResetCompleteView(views.PasswordResetCompleteView):
     template_name = 'password_reset_complete.html'
 
 
-@method_decorator(decorators, name='dispatch')
 class PasswordChangeView(mixins.TwoFactorMixin, views.PasswordChangeView):
     template_name = 'password_change_form.html'
 
 
-@method_decorator(decorators, name='dispatch')
 class PasswordChangeDoneView(mixins.TwoFactorMixin, views.PasswordChangeDoneView):
     template_name = 'password_change_done.html'

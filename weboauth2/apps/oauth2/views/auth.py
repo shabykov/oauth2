@@ -1,13 +1,13 @@
 import logging
 
 from urllib.parse import urlencode
-
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.shortcuts import reverse
 from oauth2_provider import views, models
+from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
-from django.shortcuts import get_object_or_404, reverse
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import ListView, TemplateView, DetailView
 from django.http import HttpResponsePermanentRedirect, HttpResponseRedirect, HttpResponseGone
 
@@ -17,8 +17,7 @@ from .. import mixins
 decorators = [never_cache, login_required]
 
 
-@method_decorator(never_cache, name='dispatch')
-class ApplicationChooseView(mixins.TwoFactorMixin, ListView):
+class ApplicationChooseView(mixins.TwoFactorMixin, mixins.ApplicationViewMixin, ListView):
     model = models.Application
     context_object_name = 'applications'
     template_name = 'oauth2/application_choose.html'
@@ -39,10 +38,9 @@ class ApplicationChooseView(mixins.TwoFactorMixin, ListView):
         return context
 
 
-@method_decorator(never_cache, name='dispatch')
-class ApplicationChooseConfirm(mixins.UserAuthMixin, mixins.TwoFactorMixin, DetailView):
-    context_object_name = 'application'
+class ApplicationChooseConfirm(mixins.TwoFactorMixin, mixins.SessionCreationMixin, DetailView):
     model = models.Application
+    context_object_name = 'application'
     template_name = 'oauth2/application_choose_confirm.html'
     scope = None
 
@@ -59,8 +57,7 @@ class ApplicationChooseConfirm(mixins.UserAuthMixin, mixins.TwoFactorMixin, Deta
         return context
 
 
-@method_decorator(never_cache, name='dispatch')
-class RedirectToAuthorizationView(mixins.UserAuthMixin, mixins.TwoFactorMixin, DetailView):
+class RedirectToAuthorizationView(mixins.TwoFactorMixin, mixins.SessionCreationMixin, DetailView):
     permanent = False
     query_string = True
     pattern_name = 'authorize'
@@ -103,10 +100,12 @@ class RedirectToAuthorizationView(mixins.UserAuthMixin, mixins.TwoFactorMixin, D
         }))
 
 
-@method_decorator(never_cache, name='dispatch')
+class AuthorizationView(mixins.TwoFactorMixin, views.AuthorizationView):
+    template_name = 'oauth2/authorize.html'
+
+
 class ScopeNotFoundView(mixins.TwoFactorMixin, TemplateView):
     template_name = 'oauth2/scope_not_found.html'
-
     application = None
 
     @method_decorator(never_cache)
@@ -123,23 +122,14 @@ class ScopeNotFoundView(mixins.TwoFactorMixin, TemplateView):
         return context
 
 
-class AuthorizationView(mixins.TwoFactorMixin, views.AuthorizationView):
-    template_name = 'oauth2/authorize.html'
-
-    @method_decorator(never_cache)
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
-
-    @method_decorator(never_cache)
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
-
-
 class TokenView(views.TokenView):
+    @method_decorator(sensitive_post_parameters("password"))
+    @method_decorator(csrf_exempt)
     def post(self, request, *args, **kwargs):
         return super(TokenView, self).post(request, *args, **kwargs)
 
 
+@method_decorator(csrf_exempt, name="dispatch")
 class RevokeTokenView(views.RevokeTokenView):
     def post(self, request, *args, **kwargs):
         return super(RevokeTokenView, self).post(request, *args, **kwargs)

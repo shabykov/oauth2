@@ -1,17 +1,17 @@
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
-from django.contrib.auth import mixins
 from django.contrib.auth.views import redirect_to_login
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 from oauth2_provider.models import Application
 
 from ...accounts.mixins import TwoFactorMixin
 
-LoginRequiredMixin = mixins.LoginRequiredMixin
+
 TwoFactorMixin = TwoFactorMixin
 
 
-class ApplicationPermissionRequiredMixin(mixins.PermissionRequiredMixin):
+class ApplicationPermissionRequiredMixin(PermissionRequiredMixin):
     login_url = reverse_lazy('login')
 
     def handle_no_permission(self):

@@ -6,7 +6,7 @@ from django.views import generic
 from .. import models, forms, mixins
 
 
-class ProfileCreateView(mixins.ProfileCreationMixin, generic.CreateView):
+class ProfileCreateView(mixins.TwoFactorMixin, mixins.ProfileCreationMixin, generic.CreateView):
     model = models.Profile
     form_class = forms.ProfileCreationForm
     template_name = 'profile/create.html'
@@ -14,13 +14,13 @@ class ProfileCreateView(mixins.ProfileCreationMixin, generic.CreateView):
     auth_user = None
     user = None
 
-    def get_initial(self):
+    def get(self, request, *args, **kwargs):
         try:
             self.user = models.User.objects.get(pk=self.kwargs['pk'])
         except Exception as error:
             logging.error(str(error))
         self.auth_user = self.request.user
-        return super().get_initial()
+        return super().get(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -32,7 +32,7 @@ class ProfileCreateView(mixins.ProfileCreationMixin, generic.CreateView):
         return reverse_lazy('profile_update', kwargs={'pk': self.object.pk })
 
 
-class ProfileUpdateView(mixins.ProfileChangeMixin, generic.UpdateView):
+class ProfileUpdateView(mixins.TwoFactorMixin, mixins.ProfileChangeMixin, generic.UpdateView):
     model = models.Profile
     form_class = forms.ProfileChangeForm
     template_name = 'profile/update.html'
@@ -50,13 +50,13 @@ class ProfileUpdateView(mixins.ProfileChangeMixin, generic.UpdateView):
         return kwargs
 
 
-class ProfileDeleteView(mixins.ProfileDeleteMixin, generic.DeleteView):
+class ProfileDeleteView(mixins.TwoFactorMixin, mixins.ProfileDeleteMixin, generic.DeleteView):
     model = models.Profile
     template_name = 'profile/delete.html'
     success_url = reverse_lazy('user_list')
 
 
-class ProfileDetailView(mixins.ProfileViewMixin, generic.DetailView):
+class ProfileDetailView(mixins.TwoFactorMixin, mixins.ProfileViewMixin, generic.DetailView):
     context_object_name = 'profile'
     model = models.Profile
     template_name = 'profile/detail.html'

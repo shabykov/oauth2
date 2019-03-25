@@ -1,15 +1,17 @@
-from django.contrib.auth import mixins
-from django.contrib.auth.views import redirect_to_login
-from django.shortcuts import redirect
 from django.urls import reverse_lazy
+from django.shortcuts import redirect
+from django.contrib.auth.views import redirect_to_login
+from django.contrib.auth.mixins import PermissionRequiredMixin
+
+from oauth2_provider.models import Application
 
 from ...accounts.mixins import TwoFactorMixin
 
-LoginRequiredMixin = mixins.LoginRequiredMixin
+
 TwoFactorMixin = TwoFactorMixin
 
 
-class AuthPermissionRequiredMixin(mixins.PermissionRequiredMixin):
+class SessionPermissionRequiredMixin(PermissionRequiredMixin):
     login_url = reverse_lazy('login')
 
     def handle_no_permission(self):
@@ -18,7 +20,7 @@ class AuthPermissionRequiredMixin(mixins.PermissionRequiredMixin):
         return redirect_to_login(self.request.get_full_path(), self.get_login_url(), self.get_redirect_field_name())
 
 
-class UserAuthMixin(AuthPermissionRequiredMixin):
+class SessionCreationMixin(SessionPermissionRequiredMixin):
     permission_required = ('sessions.add_session',
                            'sessions.change_session',
 

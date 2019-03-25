@@ -4,7 +4,7 @@ from oauth2_provider import views
 from .. import mixins
 
 
-class ApplicationList(mixins.ApplicationViewMixin, mixins.TwoFactorMixin, views.ApplicationList):
+class ApplicationList(mixins.TwoFactorMixin, mixins.ApplicationViewMixin, views.ApplicationList):
     template_name = 'oauth2/applications/list.html'
 
 

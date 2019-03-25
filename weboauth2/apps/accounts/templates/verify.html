@@ -13,15 +13,18 @@
                     {% csrf_token %}
                     <div class="form-group">
                         <p>
-                            На вашу электронную почту {{ request.user.eamil }} было отправлено письмо с кодом подтверждения.
-                            Введите полученный код.
+                            На вашу электронную почту {{ request.user.eamil }} было отправлено письмо с кодом подтверждения,
+                            введите полученный код.
                         </p>
-                        {% render_field form.code class="form-control" %}
+                        <input type="number" name="code" class="form-control" required id="id_code">
                         {% for error in form.code.errors %}
-                        <p class="alert alert-warning">{{ error }}</p>
+                        <div class="alert alert-warning" role="alert">
+                            {{ error }}
+                        </div>
                         {% endfor %}
                     </div>
                     <div class="form-group">
+                        <a class="btn btn-link" href="{% url 'send_new_code' %}">Отправить ещё раз</a>
                         <button type="submit" class="btn btn-success">Подтвердить</button>
                     </div>
                 </form>

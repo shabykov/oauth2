@@ -3,6 +3,7 @@ from django.db import models
 from django.dispatch import receiver
 from django.core.mail import send_mail
 from django.db.models.signals import post_save
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin, Group
@@ -266,6 +267,22 @@ class TwoFactor(models.Model):
         blank=False
     )
 
+    created = models.DateTimeField(
+        default=timezone.now,
+        editable=False,
+        verbose_name='Дата создания'
+    )
+
+    updated = models.DateTimeField(
+        default=timezone.now,
+        verbose_name='Дата обновления'
+    )
+
+    alive_period = models.PositiveSmallIntegerField(
+        default=60,
+        verbose_name='Время жизни кода, секунд'
+    )
+
     objects = models.Manager()
 
     def __str__(self):
@@ -274,12 +291,28 @@ class TwoFactor(models.Model):
     def check_verification_code(self, code):
         return self.code == code
 
+    def is_alive(self):
+        return 0.0 < (timezone.now() - self.updated).seconds < self.alive_period
+
     def send_code(self):
         self.user.email_user(
-            subject='Код подтверждения',
+            subject='Верификация сессии',
             message='Код подтверждения: {}'.format(self.code),
-            from_email='Сервер авторизации')
+            from_email='IT Assets Manager <assetmanager@nornik.ru>')
+
+    def notify_about_verification(self):
+        self.user.email_user(
+            subject='Был осуществлен вход',
+            message='Под вашей учетной записью "{}" был осуществлен вход в систему.'.format(
+                self.user.username
+            ),
+            from_email='IT Assets Manager <assetmanager@nornik.ru>')
 
     def save(self, *args, **kwargs):
         self.code = generate_random_code()
+
+        if not self.pk:
+            self.created = timezone.now()
+        self.updated = timezone.now()
+
         super(TwoFactor, self).save(*args, **kwargs)

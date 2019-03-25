@@ -17,6 +17,11 @@ urlpatterns = [
         name='login'
     ),
     url(
+        r'^accounts/send-new/$',
+        views.TwoFactorSendNewView.as_view(),
+        name='send_new_code'
+    ),
+    url(
         r'^accounts/verify/$',
         views.TwoFactorVerifyView.as_view(),
         name='verify'
