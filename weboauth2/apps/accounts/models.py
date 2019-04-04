@@ -298,7 +298,7 @@ class TwoFactor(models.Model):
         self.user.email_user(
             subject='Верификация сессии',
             message='Код подтверждения: {}'.format(self.code),
-            from_email='IT Assets Manager <assetmanager@nornik.ru>')
+            from_email='IT Manager <it@company.ru>')
 
     def notify_about_verification(self):
         self.user.email_user(
@@ -306,7 +306,7 @@ class TwoFactor(models.Model):
             message='Под вашей учетной записью "{}" был осуществлен вход в систему.'.format(
                 self.user.username
             ),
-            from_email='IT Assets Manager <assetmanager@nornik.ru>')
+            from_email='IT Manager <it@company.ru>')
 
     def save(self, *args, **kwargs):
         self.code = generate_random_code()
